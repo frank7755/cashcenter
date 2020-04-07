@@ -11,7 +11,7 @@ import {
   getLastWeek,
   getToday,
   getLast7Days,
-  getYesterday
+  getYesterday,
 } from '~js/utils/date-fns';
 import { Link } from 'react-router-dom';
 const { Option } = Select;
@@ -24,44 +24,46 @@ const status = {
   '30': '买家已经退货，等待卖家确认收货',
   '40': '卖家未收到货,拒绝退款',
   '50': '退款关闭',
-  '60': '退款成功'
+  '60': '退款成功',
 };
 const FormItem = Form.Item;
 
 @Form.create()
 class SendGoods extends React.Component {
   state = {
-    selectedRowKeys: [],
     visible: false,
     express: [],
-    type: 'express'
+    type: 'express',
   };
 
   rowSelection = {
+    selectedRowKeys: this.props.selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
-      this.setState({ selectedRowKeys: selectedRowKeys });
+      const { onChange } = this.props;
+      console.log(this.props.selectedRowKeys, selectedRowKeys);
+      onChange && onChange(selectedRowKeys);
     },
-    getCheckboxProps: record => ({
-      disabled: record.status != null // Column configuration not to be checked
-    })
+    getCheckboxProps: (record) => ({
+      disabled: record.status != null, // Column configuration not to be checked
+    }),
   };
 
   showModal = () => {
     request('/api/logistics_express', {
       method: 'post',
       body: {
-        yz_token_info: this.props.yztoken
-      }
-    }).then(payload => this.setState({ express: payload.pageData }));
+        yz_token_info: this.props.yztoken,
+      },
+    }).then((payload) => this.setState({ express: payload.pageData }));
     this.setState({
       visible: true,
-      selectedRowKeys: []
+      selectedRowKeys: [],
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -77,7 +79,7 @@ class SendGoods extends React.Component {
             <Fragment>
               <a style={{ marginBottom: 10, display: 'inline-block' }}>{title}</a>
               <p style={{ margin: 0 }}>
-                {skuName.map(item => (
+                {skuName.map((item) => (
                   <span key={item.k} style={{ marginRight: 10 }}>
                     {item.k + ':' + item.v}
                   </span>
@@ -86,16 +88,16 @@ class SendGoods extends React.Component {
             </Fragment>
           );
         }
-      }
+      },
     },
     {
       title: '数量',
-      dataIndex: 'num'
+      dataIndex: 'num',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      render: status => {
+      render: (status) => {
         return (
           <Fragment>
             {status == null && <span className="textDelete">未发货</span>}
@@ -103,16 +105,17 @@ class SendGoods extends React.Component {
             {status == '2' && <span className="textEdit">维权中</span>}
           </Fragment>
         );
-      }
+      },
     },
     {
-      title: '运单号'
-    }
+      title: '运单号',
+    },
   ];
 
   handleSend = () => {
-    const { selectedRowKeys, type } = this.state;
-    const { onChange } = this.props;
+    const { type } = this.state;
+    const { onChange, selectedRowKeys } = this.props;
+    console.log(selectedRowKeys);
 
     if (type == 'express') {
       if (selectedRowKeys.length) {
@@ -125,15 +128,15 @@ class SendGoods extends React.Component {
                 tid: this.props.tid,
                 yz_token_info: this.props.yztoken,
                 oids: selectedRowKeys.join(','),
-                ...value
-              }
+                ...value,
+              },
             })
-              .then(payload => {
+              .then((payload) => {
                 message.success('发货成功');
-                this.setState({ visible: false, selectedRowKeys: [] });
-                location.reload();
+                this.setState({ visible: false });
+                onChange && onChange([]);
               })
-              .catch(error => message.error(error.message));
+              .catch((error) => message.error(error.message));
           }
         });
       } else {
@@ -147,23 +150,23 @@ class SendGoods extends React.Component {
             id: this.props.id,
             tid: this.props.tid,
             yz_token_info: this.props.yztoken,
-            oids: selectedRowKeys.join(',')
-          }
+            oids: selectedRowKeys.join(','),
+          },
         })
-          .then(payload => {
+          .then((payload) => {
             message.success('发货成功');
-            this.setState({ visible: false, selectedRowKeys: [] });
-            location.reload();
+            this.setState({ visible: false });
+            onChange && onChange([]);
           })
-          .catch(error => message.error(error.message));
+          .catch((error) => message.error(error.message));
       } else {
         message.error('请选择需要发货的商品');
       }
     }
   };
-  handleGroup = e => {
+  handleGroup = (e) => {
     this.setState({
-      type: e.target.value
+      type: e.target.value,
     });
   };
 
@@ -231,11 +234,11 @@ class SendGoods extends React.Component {
               <section>
                 <FormItem label="物流公司">
                   {getFieldDecorator('out_stype', {
-                    rules: [{ required: true, message: '请选择物流公司' }]
+                    rules: [{ required: true, message: '请选择物流公司' }],
                   })(
                     <Select style={{ width: '100%' }} placeholder="请选择快递">
                       {express &&
-                        express.map(item => (
+                        express.map((item) => (
                           <Option key={item.id} value={item.id}>
                             {item.name}
                           </Option>
@@ -245,7 +248,7 @@ class SendGoods extends React.Component {
                 </FormItem>
                 <FormItem label="快递单号">
                   {getFieldDecorator('out_sid', {
-                    rules: [{ required: true, message: '请输入快递单号' }]
+                    rules: [{ required: true, message: '请输入快递单号' }],
                   })(<Input type="text" style={{ width: '100%' }} placeholder="请输入快递单号"></Input>)}
                 </FormItem>
               </section>
@@ -262,7 +265,7 @@ class OrderList extends React.Component {
   state = {
     listData: [],
     total: null,
-    current: 1
+    current: 1,
   };
 
   componentDidMount() {
@@ -275,7 +278,7 @@ class OrderList extends React.Component {
       昨天: getYesterday(),
       本周: getCurrWeek(),
       上周: getLastWeek(),
-      本月: getCurrMonth()
+      本月: getCurrMonth(),
     };
   }
 
@@ -295,9 +298,9 @@ class OrderList extends React.Component {
             end_time: end_time,
             page: page || 1,
             pageSize: pageSize || 20,
-            ...rest
-          }
-        }).then(payload => {
+            ...rest,
+          },
+        }).then((payload) => {
           this.setState({ listData: payload.pageData, total: payload.total, current: payload.page });
         });
       }
@@ -340,7 +343,7 @@ class OrderList extends React.Component {
               <span className={styles.rowItem}>
                 <label>选择日期：</label>
                 {getFieldDecorator('dateRange', {
-                  initialValue: [moment().subtract(0.5, 'year'), moment()]
+                  initialValue: [moment().subtract(0.5, 'year'), moment()],
                 })(<RangePicker allowClear={false} style={{ width: 'calc(100% - 80px)' }} ranges={this.getDateRanges()} />)}
               </span>
             </Col>
@@ -387,7 +390,7 @@ class OrderList extends React.Component {
             <li className={styles.listHeaderItem}>操作</li>
           </ul>
           {listData &&
-            listData.map(item => (
+            listData.map((item) => (
               <ListItemTable
                 item={item}
                 address={item.address}
@@ -422,20 +425,29 @@ class OrderList extends React.Component {
   }
 }
 class ListItemTable extends React.Component {
+  state = {
+    selectedRowKeys: [],
+  };
+
+  handleSelect = (val) => {
+    console.log(val);
+    this.setState({ selectedRowKeys: val });
+  };
+
   renderContent = (val, record, index) => {
     if (index == 0) {
       return {
         children: this.props.val,
         props: {
-          rowSpan: this.props.len
-        }
+          rowSpan: this.props.len,
+        },
       };
     }
     return {
       children: this.props.price,
       props: {
-        rowSpan: 0
-      }
+        rowSpan: 0,
+      },
     };
   };
 
@@ -454,7 +466,7 @@ class ListItemTable extends React.Component {
                 {title}
               </a>
               <p style={{ margin: 0 }}>
-                {skuName.map(item => (
+                {skuName.map((item) => (
                   <span key={item.k} style={{ marginRight: 10 }}>
                     {item.k + ':' + item.v}
                   </span>
@@ -463,7 +475,7 @@ class ListItemTable extends React.Component {
             </Fragment>
           );
         }
-      }
+      },
     },
     {
       title: '单价 / 数量',
@@ -477,7 +489,7 @@ class ListItemTable extends React.Component {
             <p>{record.num}</p>
           </Fragment>
         );
-      }
+      },
     },
     {
       title: '售后',
@@ -491,7 +503,7 @@ class ListItemTable extends React.Component {
           return '';
         }
         return <Link to={`/onlineorder/action/${record.refund_id}`}>{status[60]}</Link>;
-      }
+      },
     },
     {
       title: '买家/收货人',
@@ -508,8 +520,8 @@ class ListItemTable extends React.Component {
               </Fragment>
             ),
             props: {
-              rowSpan: this.props.len
-            }
+              rowSpan: this.props.len,
+            },
           };
         }
         return {
@@ -520,10 +532,10 @@ class ListItemTable extends React.Component {
             </Fragment>
           ),
           props: {
-            rowSpan: 0
-          }
+            rowSpan: 0,
+          },
         };
-      }
+      },
     },
     {
       title: '实收金额',
@@ -535,17 +547,17 @@ class ListItemTable extends React.Component {
           return {
             children: `￥${formatThousands(this.props.price)}`,
             props: {
-              rowSpan: this.props.len
-            }
+              rowSpan: this.props.len,
+            },
           };
         }
         return {
           children: `￥${formatThousands(this.props.price)}`,
           props: {
-            rowSpan: 0
-          }
+            rowSpan: 0,
+          },
         };
-      }
+      },
     },
     {
       title: '订单状态',
@@ -557,17 +569,17 @@ class ListItemTable extends React.Component {
           return {
             children: val == '已发货' ? <span className="textSuccess">{val}</span> : <span className="textDelete">{val}</span>,
             props: {
-              rowSpan: this.props.len
-            }
+              rowSpan: this.props.len,
+            },
           };
         }
         return {
           children: val == '已发货' ? <span className="textSuccess">{val}</span> : <span className="textDelete">{val}</span>,
           props: {
-            rowSpan: 0
-          }
+            rowSpan: 0,
+          },
         };
-      }
+      },
     },
     {
       title: '操作',
@@ -581,7 +593,9 @@ class ListItemTable extends React.Component {
               children: (
                 <SendGoods
                   id={this.props.id}
+                  onChange={this.handleSelect}
                   yztoken={this.props.yztoken}
+                  selectedRowKeys={this.state.selectedRowKeys}
                   tid={this.props.tid}
                   data={this.props.data}
                   receiver_tel={this.props.receiver_tel}
@@ -590,15 +604,17 @@ class ListItemTable extends React.Component {
                 ></SendGoods>
               ),
               props: {
-                rowSpan: this.props.len
-              }
+                rowSpan: this.props.len,
+              },
             };
           } else {
             return {
               children: (
                 <SendGoods
                   receiver_tel={this.props.receiver_tel}
+                  onChange={this.handleSelect}
                   id={this.props.id}
+                  selectedRowKeys={this.state.selectedRowKeys}
                   yztoken={this.props.yztoken}
                   tid={this.props.tid}
                   receiver_name={this.props.receiver_name}
@@ -608,8 +624,8 @@ class ListItemTable extends React.Component {
                 ></SendGoods>
               ),
               props: {
-                rowSpan: this.props.len
-              }
+                rowSpan: this.props.len,
+              },
             };
           }
         }
@@ -618,6 +634,8 @@ class ListItemTable extends React.Component {
             <SendGoods
               id={this.props.id}
               yztoken={this.props.yztoken}
+              onChange={this.handleSelect}
+              selectedRowKeys={this.state.selectedRowKeys}
               tid={this.props.tid}
               receiver_tel={this.props.receiver_tel}
               receiver_name={this.props.receiver_name}
@@ -627,15 +645,16 @@ class ListItemTable extends React.Component {
             ></SendGoods>
           ),
           props: {
-            rowSpan: 0
-          }
+            rowSpan: 0,
+          },
         };
-      }
-    }
+      },
+    },
   ];
 
   render() {
     const { data, item, ...rest } = this.props;
+    console.log(this.state.selectedRowKeys);
 
     return (
       <div className={styles.listItem}>

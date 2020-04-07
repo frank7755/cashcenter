@@ -98,8 +98,6 @@ class DetailsTable extends React.Component {
   render() {
     const { table, ...restProps } = this.props;
 
-    console.log(table.response);
-
     return (
       <Fragment>
         <h2 className="title">

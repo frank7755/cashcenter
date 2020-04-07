@@ -41,14 +41,14 @@ const server = app.listen(() => {
   configure.output = Object.assign(configure.output, {
     filename: 'js/[name].js',
     chunkFilename: 'js/[name].js',
-    publicPath: devServerPublicPath
+    publicPath: devServerPublicPath,
   });
   configure.plugins = [
     ...configure.plugins,
     new webpack.HotModuleReplacementPlugin(),
     new webpack.EnvironmentPlugin({ DEBUG: true, NODE_ENV: mode }),
     new webpack.SourceMapDevToolPlugin({ exclude: sourceMapExclude }),
-    new ExtractCssChunks({ filename: 'css/[name].css', chunkFilename: 'css/[id].css', ignoreOrder: true })
+    new ExtractCssChunks({ filename: 'css/[name].css', chunkFilename: 'css/[id].css', ignoreOrder: true }),
   ];
   configure.module.rules = loaders(true);
 
@@ -61,15 +61,15 @@ const server = app.listen(() => {
     hotClient: {
       host: ip,
       logLevel: 'silent',
-      autoConfigure: false
+      autoConfigure: false,
     },
     devMiddleware: {
       watchOptions,
       logLevel: 'silent',
-      writeToDisk: file => file === entryHTML,
-      headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': true }
-    }
-  }).then(middleware => {
+      writeToDisk: (file) => file === entryHTML,
+      headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': true },
+    },
+  }).then((middleware) => {
     app.use(middleware);
   });
 });

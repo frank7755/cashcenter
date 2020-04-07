@@ -20,13 +20,13 @@ class ChangePassword extends React.Component {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
   handleCancel = () => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -39,14 +39,14 @@ class ChangePassword extends React.Component {
             method: 'post',
             body: {
               pwd: value.pwd,
-              telnumber: store.get(tel)
-            }
+              telnumber: store.get(tel),
+            },
           })
-            .then(payload => {
+            .then((payload) => {
               message.success('修改成功');
               this.setState({ visible: false });
             })
-            .catch(error => {
+            .catch((error) => {
               message.error(error.message);
               this.props.history.push('/login');
             });
@@ -54,8 +54,8 @@ class ChangePassword extends React.Component {
           form.setFields({
             pwd1: {
               value: value.pwd1,
-              errors: [new Error('2次输入密码不一致')]
-            }
+              errors: [new Error('2次输入密码不一致')],
+            },
           });
         }
       }
@@ -75,7 +75,7 @@ class ChangePassword extends React.Component {
           <Form onChange={this.handlChange}>
             <FormItem label="输入密码">
               {getFieldDecorator('pwd', {
-                rules: [{ required: true, message: '请输入密码' }]
+                rules: [{ required: true, message: '请输入密码' }],
               })(
                 <Input
                   prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -87,7 +87,7 @@ class ChangePassword extends React.Component {
             </FormItem>
             <FormItem label="确认密码">
               {getFieldDecorator('pwd1', {
-                rules: [{ required: true, message: '请输入密码' }]
+                rules: [{ required: true, message: '请输入密码' }],
               })(
                 <Input
                   prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -107,10 +107,10 @@ class ChangePassword extends React.Component {
 class App extends React.Component {
   state = {
     draw: false,
-    openKeys: ['8']
+    openKeys: ['8'],
   };
 
-  onOpenChange = openKeys => {
+  onOpenChange = (openKeys) => {
     this.setState({ openKeys });
   };
 
@@ -130,23 +130,17 @@ class App extends React.Component {
           method: 'post',
           body: {
             id: store.get(userId),
-            token_info: store.get(storeToken)
-          }
+            token_info: store.get(storeToken),
+          },
         })
-          .then(payload => this.setState({ draw: true }))
-          .catch(error => {
+          .then((payload) => this.setState({ draw: true }))
+          .catch((error) => {
             message.error(error.message);
             this.props.history.push('/login');
           }),
       0
     );
   }
-  componentDidMount() {
-    const path = this.props.location.pathname;
-    const key = path != '/' ? menu.filter(item => item.children.filter(sub => sub.src == path).length > 0)[0].key : ['8'];
-    this.setState({ openKeys: [`${key}`] });
-  }
-
   render() {
     const { SubMenu } = Menu;
     const { Header, Content, Sider } = Layout;
@@ -179,7 +173,7 @@ class App extends React.Component {
           style={{
             height: '100vh',
             position: 'fixed',
-            left: 0
+            left: 0,
           }}
           theme="dark"
         >
@@ -196,7 +190,7 @@ class App extends React.Component {
             defaultOpenKeys={this.state.openKeys}
             selectedKeys={[`${path}`]}
           >
-            {menu.map(nav => (
+            {menu.map((nav) => (
               <SubMenu
                 key={nav.key}
                 title={
@@ -207,7 +201,7 @@ class App extends React.Component {
                 }
               >
                 {nav.children &&
-                  nav.children.map(subnav => (
+                  nav.children.map((subnav) => (
                     <Menu.Item key={subnav.src}>
                       <Link to={subnav.src}>{subnav.title}</Link>
                     </Menu.Item>
@@ -232,7 +226,7 @@ class App extends React.Component {
               padding: 24,
               height: '100%',
               minHeight: 'auto',
-              overflowY: 'srcoll'
+              overflowY: 'srcoll',
             }}
           >
             {this.props.children(

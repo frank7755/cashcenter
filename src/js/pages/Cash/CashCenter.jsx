@@ -17,7 +17,7 @@ import {
   InputNumber,
   Popconfirm,
   Modal,
-  Radio
+  Radio,
 } from 'antd';
 
 const { Item: FormItem } = Form;
@@ -42,10 +42,10 @@ class EditableCell extends React.Component {
               rules: [
                 {
                   required: true,
-                  message: `请输入${title}!`
-                }
+                  message: `请输入${title}!`,
+                },
               ],
-              initialValue: record[dataIndex]
+              initialValue: record[dataIndex],
             })(this.getInput())}
           </Form.Item>
         ) : (
@@ -66,11 +66,11 @@ class SingleDiscount extends React.Component {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
-  handleOk = e => {
+  handleOk = (e) => {
     const { data, onChange } = this.props;
 
     this.props.form.validateFields((error, values) => {
@@ -81,13 +81,13 @@ class SingleDiscount extends React.Component {
       }
     });
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
     this.props.form.resetFields();
   };
@@ -107,11 +107,7 @@ class SingleDiscount extends React.Component {
               {getFieldDecorator('price_num', {
                 initialValue: data && data.price_num,
                 rules: [{ required: true, message: '请输入优惠价格' }],
-                pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                 message: '请输入优惠价格',
-                getValueFromEvent: event => {
-                  return event.target.value.replace(/\D/g, '');
-                }
               })(<Input placeholder="请输入优惠价格" />)}
             </FormItem>
             <FormItem label="折扣">
@@ -160,12 +156,12 @@ class EditableTable extends React.Component {
     {
       title: '商品',
       dataIndex: 'name',
-      width: 300
+      width: 300,
     },
     {
       title: '规格',
       dataIndex: 'properties_name_json',
-      width: 300
+      width: 300,
     },
     {
       title: '售价',
@@ -174,14 +170,14 @@ class EditableTable extends React.Component {
       editable: true,
       render(price) {
         return `￥${formatThousands(price)}`;
-      }
+      },
     },
     {
       title: '数量',
       dataIndex: 'count',
       width: 150,
       min: 1,
-      editable: true
+      editable: true,
     },
     {
       title: '小计',
@@ -203,7 +199,7 @@ class EditableTable extends React.Component {
             )}
           </Fragment>
         );
-      }
+      },
     },
     {
       title: '操作',
@@ -217,7 +213,7 @@ class EditableTable extends React.Component {
         return editable ? (
           <span>
             <EditableContext.Consumer>
-              {form => (
+              {(form) => (
                 <a onClick={() => this.save(form, record.sku_id)} style={{ marginRight: 8 }}>
                   保存
                 </a>
@@ -237,29 +233,29 @@ class EditableTable extends React.Component {
             >
               编辑
             </a>
-            <SingleDiscount onChange={values => this.handleSingleDiscount(values)} data={record}></SingleDiscount>
+            <SingleDiscount onChange={(values) => this.handleSingleDiscount(values)} data={record}></SingleDiscount>
             <Popconfirm title="确定要删除?" onConfirm={() => this.handleDelete(record.sku_id)}>
               <a className="textDelete">删除</a>
             </Popconfirm>
           </Fragment>
         );
-      }
-    }
+      },
+    },
   ];
 
-  handleSingleDiscount = values => {
+  handleSingleDiscount = (values) => {
     const { data } = this.state;
-    const newData = data.map(item => (item.sku_id == values.sku_id ? { ...item, ...values } : item));
+    const newData = data.map((item) => (item.sku_id == values.sku_id ? { ...item, ...values } : item));
 
     this.setState({ data: newData });
   };
 
-  handleDelete = value => {
+  handleDelete = (value) => {
     const { data } = this.state;
-    this.setState({ data: data.filter(item => item.sku_id != value) });
+    this.setState({ data: data.filter((item) => item.sku_id != value) });
   };
 
-  isEditing = record => record.sku_id === this.state.editingKey;
+  isEditing = (record) => record.sku_id === this.state.editingKey;
 
   cancel = () => {
     this.setState({ editingKey: '' });
@@ -272,7 +268,7 @@ class EditableTable extends React.Component {
       }
       let price = row.count * row.price;
       const newData = [...this.state.data];
-      const index = newData.findIndex(item => key === item.sku_id);
+      const index = newData.findIndex((item) => key === item.sku_id);
 
       if (index > -1) {
         const item = newData[index];
@@ -281,7 +277,7 @@ class EditableTable extends React.Component {
           ...item,
           ...row,
           newPrice_num: price,
-          price_num: price
+          price_num: price,
         });
       } else {
         newData.push(row);
@@ -291,11 +287,11 @@ class EditableTable extends React.Component {
     });
   };
 
-  edit = key => {
+  edit = (key) => {
     this.setState({ editingKey: key });
   };
 
-  renderOption = item => {
+  renderOption = (item) => {
     return (
       <Option key={item.sku_id}>
         <div className="global-search-item">{item.name + '   ' + item.properties_name_json + ' 库存:' + item.quantity}</div>
@@ -304,37 +300,37 @@ class EditableTable extends React.Component {
   };
 
   @debounce(150)
-  handleSearch = value => {
+  handleSearch = (value) => {
     const { id } = this.props;
 
     value
       ? request('/api/local_order_management/goods_select', {
           method: 'post',
-          body: { id: id, name: value }
-        }).then(payload => this.setState({ GoodsSource: payload.pageData }))
+          body: { id: id, name: value },
+        }).then((payload) => this.setState({ GoodsSource: payload.pageData }))
       : [];
   };
 
-  onSelect = value => {
+  onSelect = (value) => {
     const { GoodsSource, data } = this.state;
 
     if (data.length) {
-      data.every(item => item.sku_id != value)
+      data.every((item) => item.sku_id != value)
         ? this.setState({
             data: data.concat({
-              ...GoodsSource.filter(item => value == item.sku_id)[0],
+              ...GoodsSource.filter((item) => value == item.sku_id)[0],
               count: 1,
-              price_num: GoodsSource.filter(item => value == item.sku_id)[0].price
-            })
+              price_num: GoodsSource.filter((item) => value == item.sku_id)[0].price,
+            }),
           })
         : message.error('请勿重复添加!');
     } else {
       this.setState({
         data: data.concat({
-          ...GoodsSource.filter(item => value == item.sku_id)[0],
+          ...GoodsSource.filter((item) => value == item.sku_id)[0],
           count: 1,
-          price_num: GoodsSource.filter(item => value == item.sku_id)[0].price
-        })
+          price_num: GoodsSource.filter((item) => value == item.sku_id)[0].price,
+        }),
       });
     }
     this.setState({ GoodsSource: [] });
@@ -350,7 +346,7 @@ class EditableTable extends React.Component {
     localStorage.setItem('hangData', JSON.stringify(nextData));
   };
 
-  resetHangUpOrder = index => {
+  resetHangUpOrder = (index) => {
     const { hangData, data } = this.state;
 
     const newData = [...hangData];
@@ -372,17 +368,17 @@ class EditableTable extends React.Component {
     let sumPay = 0;
     const components = {
       body: {
-        cell: EditableCell
-      }
+        cell: EditableCell,
+      },
     };
 
-    const columns = this.columns.map(col => {
+    const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
       }
       return {
         ...col,
-        onCell: record => {
+        onCell: (record) => {
           return {
             record,
             min: col.min,
@@ -391,14 +387,14 @@ class EditableTable extends React.Component {
             inputType: col.dataIndex === 'price' || col.dataIndex === 'count' ? 'number' : 'text',
             dataIndex: col.dataIndex,
             title: col.title,
-            editing: this.isEditing(record)
+            editing: this.isEditing(record),
           };
-        }
+        },
       };
     });
 
     data.length &&
-      data.forEach(item => {
+      data.forEach((item) => {
         console.log(item.newPrice_num);
         sumCount += +item.count;
         sumAmount += +item.price_num;
@@ -434,7 +430,7 @@ class EditableTable extends React.Component {
           <Button type="danger" onClick={this.hangup}>
             挂单
           </Button>
-          <HangUpOrder disabled={data.length} data={hangData} onChange={value => this.resetHangUpOrder(value)}></HangUpOrder>
+          <HangUpOrder disabled={data.length} data={hangData} onChange={(value) => this.resetHangUpOrder(value)}></HangUpOrder>
         </div>
         <AutoComplete
           className="global-search"
@@ -455,7 +451,7 @@ class EditableTable extends React.Component {
           columns={columns}
           rowClassName="editable-row"
           pagination={{
-            onChange: this.cancel
+            onChange: this.cancel,
           }}
         />
       </EditableContext.Provider>
@@ -468,28 +464,28 @@ class HangUpOrder extends React.PureComponent {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
-  handleOk = e => {
+  handleOk = (e) => {
     const { data, onChange } = this.props;
     const { checkedNum } = this.state;
 
     this.setState({
-      visible: false
+      visible: false,
     });
 
     onChange && onChange(checkedNum);
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
-  handleClick = value => {
+  handleClick = (value) => {
     this.setState({ checkedNum: value });
   };
 
@@ -521,7 +517,7 @@ class HangUpOrder extends React.PureComponent {
                   <div>
                     <i>{index + 1}</i>
                     <div key={index}>
-                      {item.map(order => (
+                      {item.map((order) => (
                         <p key={order.sku_id}>{order.name}</p>
                       ))}
                     </div>
@@ -542,41 +538,41 @@ class PayDrawer extends React.Component {
     staff_id: '',
     staff_name: '',
     vip_id: '',
-    vip_name: ''
+    vip_name: '',
   };
 
   @debounce(150)
-  handleGuideSearch = value => {
+  handleGuideSearch = (value) => {
     const { id } = this.props;
 
     value
       ? request('/api/select_employess', {
           method: 'post',
-          body: { id: id, name: value }
-        }).then(payload => this.setState({ GuideSource: payload.pageData }))
+          body: { id: id, name: value },
+        }).then((payload) => this.setState({ GuideSource: payload.pageData }))
       : [];
   };
 
   @debounce(150)
-  handleVipSearch = value => {
+  handleVipSearch = (value) => {
     const { id } = this.props;
 
     value
       ? request('/api/select_vipuser', {
           method: 'post',
-          body: { id: id, name: value }
-        }).then(payload => this.setState({ VipSource: payload.pageData }))
+          body: { id: id, name: value },
+        }).then((payload) => this.setState({ VipSource: payload.pageData }))
       : [];
   };
 
-  renderGuideOption = item => {
+  renderGuideOption = (item) => {
     return (
       <Option key={item.staff_id}>
         <div className="global-search-item">{item.staff_name + ' ' + item.staff_id}</div>
       </Option>
     );
   };
-  renderVipOption = item => {
+  renderVipOption = (item) => {
     return (
       <Option key={item.vip_id}>
         <div className="global-search-item">{item.vip_id + ' ' + item.vip_name}</div>
@@ -584,15 +580,15 @@ class PayDrawer extends React.Component {
     );
   };
 
-  onGuideSelect = value => {
+  onGuideSelect = (value) => {
     const { GuideSource } = this.state;
-    const GuideInfo = GuideSource.filter(item => item.staff_id == value)[0];
+    const GuideInfo = GuideSource.filter((item) => item.staff_id == value)[0];
     this.setState({ staff_id: GuideInfo.staff_id, staff_name: GuideInfo.staff_name });
   };
 
-  onVipSelect = value => {
+  onVipSelect = (value) => {
     const { VipSource } = this.state;
-    const VipInfo = VipSource.filter(item => item.vip_id == value)[0];
+    const VipInfo = VipSource.filter((item) => item.vip_id == value)[0];
     this.setState({ vip_id: VipInfo.vip_id, vip_name: VipInfo.vip_name });
   };
 
@@ -616,10 +612,10 @@ class PayDrawer extends React.Component {
         className={styles.PayDrawer}
         action="/api/order_management/insert"
         title="结账"
-        filter={data => ({
+        filter={(data) => ({
           id: this.props.id,
           yz_token_info: this.props.yztoken,
-          ...data
+          ...data,
         })}
         afterVisibleChange={this.resetData}
         data={{ skus: this.props.data }}
@@ -663,21 +659,21 @@ class PayDrawer extends React.Component {
               <section>
                 <FormItem label="导购员姓名">
                   {getFieldDecorator('staff_name', {
-                    initialValue: staff_name
+                    initialValue: staff_name,
                   })(<Input disabled></Input>)}
                 </FormItem>
               </section>
               <section>
                 <FormItem label="导购员id">
                   {getFieldDecorator('staff_id', {
-                    initialValue: staff_id
+                    initialValue: staff_id,
                   })(<Input disabled></Input>)}
                 </FormItem>
               </section>
               <section>
                 <FormItem label="会员id">
                   {getFieldDecorator('vip_id', {
-                    initialValue: vip_id
+                    initialValue: vip_id,
                   })(<Input disabled></Input>)}
                 </FormItem>
               </section>
@@ -685,7 +681,7 @@ class PayDrawer extends React.Component {
                 <FormItem label="订单金额">
                   {getFieldDecorator('pur_sal', {
                     initialValue: sumAmount,
-                    rules: [{ required: true }]
+                    rules: [{ required: true }],
                   })(<Input disabled suffix="元"></Input>)}
                 </FormItem>
               </section>
@@ -693,14 +689,14 @@ class PayDrawer extends React.Component {
                 <FormItem label="订单内商品数量">
                   {getFieldDecorator('pur_num', {
                     initialValue: sumCount,
-                    rules: [{ required: true }]
+                    rules: [{ required: true }],
                   })(<Input disabled></Input>)}
                 </FormItem>
               </section>
               <section>
                 <FormItem label="支付方式">
                   {getFieldDecorator('pay_type', {
-                    rules: [{ required: true, message: '请选择支付方式' }]
+                    rules: [{ required: true, message: '请选择支付方式' }],
                   })(
                     <Select placeholder="请选择支付方式">
                       <Option value={1}>支付宝</Option>
@@ -714,7 +710,7 @@ class PayDrawer extends React.Component {
               <FormItem label="优惠价格">
                 {getFieldDecorator('sal', {
                   initialValue: sumPay,
-                  rules: [{ required: true, message: '请输入最终优惠价格' }]
+                  rules: [{ required: true, message: '请输入最终优惠价格' }],
                 })(
                   <Input
                     placeholder="请输入最终优惠价格"
