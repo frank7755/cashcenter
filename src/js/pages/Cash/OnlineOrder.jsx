@@ -36,18 +36,6 @@ class SendGoods extends React.Component {
     type: 'express',
   };
 
-  rowSelection = {
-    selectedRowKeys: this.props.selectedRowKeys,
-    onChange: (selectedRowKeys, selectedRows) => {
-      const { onChange } = this.props;
-      console.log(this.props.selectedRowKeys, selectedRowKeys);
-      onChange && onChange(selectedRowKeys);
-    },
-    getCheckboxProps: (record) => ({
-      disabled: record.status != null, // Column configuration not to be checked
-    }),
-  };
-
   showModal = () => {
     request('/api/logistics_express', {
       method: 'post',
@@ -115,7 +103,6 @@ class SendGoods extends React.Component {
   handleSend = () => {
     const { type } = this.state;
     const { onChange, selectedRowKeys } = this.props;
-    console.log(selectedRowKeys);
 
     if (type == 'express') {
       if (selectedRowKeys.length) {
@@ -174,6 +161,16 @@ class SendGoods extends React.Component {
     const { visible, express, type } = this.state;
     const { getFieldDecorator } = this.props.form;
     const { data, disabled, receiver_name, receiver_tel, address } = this.props;
+    const rowSelection = {
+      selectedRowKeys: this.props.selectedRowKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        const { onChange } = this.props;
+        onChange && onChange(selectedRowKeys);
+      },
+      getCheckboxProps: (record) => ({
+        disabled: record.status != null, // Column configuration not to be checked
+      }),
+    };
 
     return (
       <Fragment>
@@ -199,13 +196,7 @@ class SendGoods extends React.Component {
             showIcon
           />
           <h3 className={styles.tableTitle}>选择商品</h3>
-          <Table
-            dataSource={data}
-            columns={this.columns}
-            rowKey="oid"
-            pagination={false}
-            rowSelection={this.rowSelection}
-          ></Table>
+          <Table dataSource={data} columns={this.columns} rowKey="oid" pagination={false} rowSelection={rowSelection}></Table>
           <div className={styles.customerInfo}>
             <span>配送信息</span>
             <section>
@@ -392,6 +383,7 @@ class OrderList extends React.Component {
           {listData &&
             listData.map((item) => (
               <ListItemTable
+                status_str={item.status_str}
                 item={item}
                 address={item.address}
                 receiver_name={item.receiver_name}
@@ -405,6 +397,7 @@ class OrderList extends React.Component {
                 id={this.props.id}
                 yztoken={this.props.yztoken}
                 tid={item.tid}
+                onChange={this.fetch}
               ></ListItemTable>
             ))}
         </div>
@@ -430,8 +423,10 @@ class ListItemTable extends React.Component {
   };
 
   handleSelect = (val) => {
-    console.log(val);
+    const { onChange } = this.props;
+
     this.setState({ selectedRowKeys: val });
+    onChange && onChange();
   };
 
   renderContent = (val, record, index) => {
@@ -567,18 +562,29 @@ class ListItemTable extends React.Component {
       render: (val, record, index) => {
         if (index == 0) {
           return {
-            children: val == '已发货' ? <span className="textSuccess">{val}</span> : <span className="textDelete">{val}</span>,
+            children:
+              this.props.status_str == '已发货' || this.props.status_str == '已完成' ? (
+                <span className="textSuccess">{this.props.status_str}</span>
+              ) : (
+                <span className="textDelete">{this.props.status_str}</span>
+              ),
             props: {
               rowSpan: this.props.len,
             },
           };
+        } else {
+          return {
+            children:
+              this.props.status_str == '已发货' || this.props.status_str == '已完成' ? (
+                <span className="textSuccess">{this.props.status_str}</span>
+              ) : (
+                <span className="textDelete">{this.props.status_str}</span>
+              ),
+            props: {
+              rowSpan: 0,
+            },
+          };
         }
-        return {
-          children: val == '已发货' ? <span className="textSuccess">{val}</span> : <span className="textDelete">{val}</span>,
-          props: {
-            rowSpan: 0,
-          },
-        };
       },
     },
     {
@@ -654,7 +660,6 @@ class ListItemTable extends React.Component {
 
   render() {
     const { data, item, ...rest } = this.props;
-    console.log(this.state.selectedRowKeys);
 
     return (
       <div className={styles.listItem}>

@@ -38,8 +38,6 @@ class GetImageGroup extends React.Component {
   };
 
   getImageUrl = (val) => {
-    const { imgData } = this.state;
-
     this.setState({
       imgData: val,
     });
@@ -48,18 +46,11 @@ class GetImageGroup extends React.Component {
   handleOk = () => {
     const { onChange } = this.props;
 
-    const { urlList, imgData } = this.state;
+    const { imgData } = this.state;
 
-    // const imgId = imgData.map(item => item.id);
-    // const chooseId = urlList.map(item => item.id);
-    // const compareArray = imgId.concat(chooseId);
-    // const isTrue = compareArray.some((item, index, arr) => arr.indexOf(item) != arr.lastIndexOf(item));
-    // console.log(isTrue, compareArray);
+    this.setState({ visible: false, urlList: imgData.map((item) => item.url) });
 
-    this.setState({ visible: false, urlList: imgData.map((item) => item.url), clear: true });
-    console.log(urlList);
-
-    onChange && onChange(urlList);
+    onChange && onChange(imgData);
   };
 
   handleRemove = (k) => {
@@ -68,7 +59,7 @@ class GetImageGroup extends React.Component {
 
   render() {
     const { visible, urlList } = this.state;
-
+    console.log(urlList);
     return (
       <div>
         <Button onClick={this.showModal}>选择商品图</Button>
@@ -99,7 +90,7 @@ class GetImageGroup extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <Picture id={this.props.id} onChange={(val) => this.getImageUrl(val)}></Picture>
+          <Picture id={this.props.id} yztoken={this.props.yztoken} onChange={this.getImageUrl}></Picture>
         </Modal>
       </div>
     );
@@ -226,7 +217,7 @@ export default class App extends React.Component {
 
   getImageId = (val) => {
     console.log(val);
-    this.setState({ imgList: val.map((item) => item) });
+    this.setState({ imgList: val });
   };
 
   handleChange = (editorState) => {
@@ -246,7 +237,7 @@ export default class App extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { editorState, goodsSort, checkedValue } = this.state;
+    const { editorState, goodsSort, checkedValue, imgList } = this.state;
 
     const controls = [
       'undo',
@@ -321,7 +312,12 @@ export default class App extends React.Component {
               </p>
             </Col>
             <Col span={10}>
-              <GetImageGroup id={this.props.id} onChange={(val) => this.getImageId(val)}></GetImageGroup>
+              <GetImageGroup
+                id={this.props.id}
+                yztoken={this.props.yztoken}
+                selectedImage={imgList}
+                onChange={this.getImageId}
+              ></GetImageGroup>
             </Col>
           </Row>
           <FormItem label="商品分组">

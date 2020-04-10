@@ -15,7 +15,6 @@ app.use(server());
 app.use(cors());
 
 router.all('/api/*', async (ctx, next) => {
-  console.log(ctx);
   ctx.respond = false;
 
   await proxy.web(ctx.req, ctx.res);

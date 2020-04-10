@@ -12,14 +12,14 @@ let newArray = [];
 class UploadFile extends React.Component {
   state = {
     fileList: [],
-    uploading: false
+    uploading: false,
   };
 
   handleUpload = () => {
     const { fileList } = this.state;
     const formData = new FormData();
 
-    fileList.forEach(file => {
+    fileList.forEach((file) => {
       formData.append('image', file);
     });
 
@@ -39,10 +39,10 @@ class UploadFile extends React.Component {
           method: 'post',
           processData: false,
           data: formData,
-          success: res => {
+          success: (res) => {
             if (res.code == 200) {
               this.setState({
-                fileList: []
+                fileList: [],
               });
               message.success('上传成功');
               onChange && onChange();
@@ -51,12 +51,12 @@ class UploadFile extends React.Component {
               this.props.form.resetFields();
             }
           },
-          error: err => {
+          error: (err) => {
             message.error('系统错误，请联系管理员');
-          }
+          },
         });
         this.setState({
-          visible: false
+          visible: false,
         });
       }
     });
@@ -64,13 +64,13 @@ class UploadFile extends React.Component {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -79,24 +79,24 @@ class UploadFile extends React.Component {
     const { fileList } = this.state;
 
     const props = {
-      onChange: item => {
+      onChange: (item) => {
         if (item.fileList.length > 1) {
           const newFileList = fileList.splice(-1, 1);
           this.setState({ fileList: newFileList });
           return false;
         }
       },
-      onRemove: file => {
-        this.setState(state => {
+      onRemove: (file) => {
+        this.setState((state) => {
           const index = state.fileList.indexOf(file);
           const newFileList = state.fileList.slice();
           newFileList.splice(index, 1);
           return {
-            fileList: newFileList
+            fileList: newFileList,
           };
         });
       },
-      beforeUpload: file => {
+      beforeUpload: (file) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif';
         if (!isJpgOrPng) {
           message.error('请上传jpg，png或gif格式图片');
@@ -106,11 +106,11 @@ class UploadFile extends React.Component {
           message.error('图片大小不超过1MB!');
         }
         this.setState({
-          fileList: isJpgOrPng && isLt2M ? [...this.state.fileList, file] : []
+          fileList: isJpgOrPng && isLt2M ? [...this.state.fileList, file] : [],
         });
         return false;
       },
-      fileList
+      fileList,
     };
 
     return (
@@ -122,7 +122,7 @@ class UploadFile extends React.Component {
           <Form>
             <FormItem label="图片名称">
               {getFieldDecorator('name', {
-                rules: [{ required: true, message: '请输入图片名称!' }]
+                rules: [{ required: true, message: '请输入图片名称!' }],
               })(<Input type="text" placeholder="请输入图片名称"></Input>)}
             </FormItem>
             <Upload {...props}>
@@ -143,11 +143,11 @@ class AddGroup extends React.PureComponent {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
-  handleOk = e => {
+  handleOk = (e) => {
     const form = this.props.form;
     const { onChange } = this.props;
 
@@ -159,8 +159,8 @@ class AddGroup extends React.PureComponent {
             id: this.props.id,
             term_name: values.term_name,
             type: 1,
-            status: 0
-          }
+            status: 0,
+          },
         }).then(() => {
           onChange && onChange();
           form.resetFields();
@@ -169,13 +169,13 @@ class AddGroup extends React.PureComponent {
     });
 
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -191,7 +191,7 @@ class AddGroup extends React.PureComponent {
           <Form>
             <Form.Item label="分组名称">
               {getFieldDecorator('term_name', {
-                rules: [{ required: true, message: '请输入分组名称' }]
+                rules: [{ required: true, message: '请输入分组名称' }],
               })(<Input placeholder="请输入分组名称" />)}
             </Form.Item>
           </Form>
@@ -204,18 +204,18 @@ class AddGroup extends React.PureComponent {
 @Form.create()
 class EditPictures extends React.PureComponent {
   state = {
-    visible: false
+    visible: false,
   };
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
   handleOk = () => {
     this.setState({
-      visible: false
+      visible: false,
     });
     this.props.form.validateFields((err, value) => {
       const { data, onChange } = this.props;
@@ -226,16 +226,16 @@ class EditPictures extends React.PureComponent {
           body: {
             ...value,
             id: this.props.id,
-            proc_id: data.proc_id
-          }
-        }).then(payload => onChange && onChange());
+            proc_id: data.proc_id,
+          },
+        }).then((payload) => onChange && onChange());
       }
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -251,16 +251,16 @@ class EditPictures extends React.PureComponent {
             <Form.Item label="图片名称">
               {getFieldDecorator('name', {
                 initialValue: data.name,
-                rules: [{ required: true, message: '请输入图片名称' }]
+                rules: [{ required: true, message: '请输入图片名称' }],
               })(<Input type="text" />)}
             </Form.Item>
             <Form.Item label="分组名称">
               {getFieldDecorator('term_id', {
                 initialValue: 0,
-                rules: [{ required: true, message: '请输入分组名称' }]
+                rules: [{ required: true, message: '请输入分组名称' }],
               })(
                 <Select>
-                  {group.map(item => (
+                  {group.map((item) => (
                     <Option value={item.proc_id} key={item.proc_id}>
                       {item.term_name}
                     </Option>
@@ -278,18 +278,18 @@ class EditPictures extends React.PureComponent {
 @Form.create()
 class GroupEdit extends React.Component {
   state = {
-    visible: false
+    visible: false,
   };
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
   handleOk = () => {
     this.setState({
-      visible: false
+      visible: false,
     });
     this.props.form.validateFields((err, value) => {
       const { data, onChange } = this.props;
@@ -301,16 +301,16 @@ class GroupEdit extends React.Component {
             ...value,
             id: this.props.id,
             type: 1,
-            proc_id: data.proc_id
-          }
-        }).then(payload => onChange && onChange());
+            proc_id: data.proc_id,
+          },
+        }).then((payload) => onChange && onChange());
       }
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
   render() {
@@ -325,7 +325,7 @@ class GroupEdit extends React.Component {
             <Form.Item label="分组名称">
               {getFieldDecorator('term_name', {
                 initialValue: data.term_name,
-                rules: [{ required: true, message: '请输入分组名称' }]
+                rules: [{ required: true, message: '请输入分组名称' }],
               })(<Input type="text" />)}
             </Form.Item>
           </Form>
@@ -336,26 +336,30 @@ class GroupEdit extends React.Component {
 }
 
 class GetImageCheck extends React.PureComponent {
-  handleChecked = e => {
-    const { array, onChange } = this.props;
+  handleChecked = (e) => {
+    const { checkedImage, onChange } = this.props;
 
     if (e.target.checked) {
-      array.unshift({
+      checkedImage.unshift({
         id: this.props.value,
-        url: this.props.url
+        url: this.props.url,
       });
-      onChange && onChange(array);
+      onChange && onChange(checkedImage);
     } else {
-      const newArray = array.filter(item => item.id != this.props.value);
+      const newArray = checkedImage.filter((item) => item.id != this.props.value);
       onChange && onChange(newArray);
     }
   };
 
   render() {
-    const { name } = this.props;
-
+    const { name, checkedImage } = this.props;
+    console.log(checkedImage);
     return (
-      <Checkbox onChange={this.handleChecked} className={styles.checkName}>
+      <Checkbox
+        onChange={this.handleChecked}
+        checked={checkedImage.some((item) => (item.id = this.props.value))}
+        className={styles.checkName}
+      >
         {name}
       </Checkbox>
     );
@@ -370,9 +374,8 @@ export default class App extends React.Component {
     item: [],
     total: 0,
     pictures: [],
-    imageArray: []
+    checkedImage: [],
   };
-
 
   getGroup = () => {
     request('/api/tmaterialcenter/term/select', {
@@ -380,14 +383,14 @@ export default class App extends React.Component {
       body: {
         id: this.props.id,
         type: 1,
-        status: 0
-      }
+        status: 0,
+      },
     })
-      .then(payload => {
+      .then((payload) => {
         this.setState({ group: payload.pageData });
         this.getPictures();
       })
-      .catch(error => message.error(error.message));
+      .catch((error) => message.error(error.message));
   };
 
   getPictures = (page, pageSize) => {
@@ -398,38 +401,51 @@ export default class App extends React.Component {
         type: 1,
         term_id: this.state.activeKey,
         page: page || 1,
-        pageSize: pageSize || 20
-      }
-    }).then(payload => this.setState({ total: payload.total, pictures: payload.pageData }));
+        pageSize: pageSize || 20,
+      },
+    }).then((payload) => this.setState({ total: payload.total, pictures: payload.pageData }));
   };
 
-  handleDelete = val => {
+  handleDelete = (val) => {
     request('/api/tmaterialcenter/list/delete', {
       method: 'post',
       body: {
         id: this.props.id,
         status: 1,
-        proc_id: val
-      }
-    }).then(payload => this.getPictures());
+        proc_id: val,
+      },
+    }).then((payload) => this.getPictures());
   };
 
-  handleGroupDelete = val => {
+  handleGroupDelete = (val) => {
     val != 0
       ? request('/api/tmaterialcenter/term/delete', {
           method: 'post',
           body: {
             id: this.props.id,
             status: 1,
-            proc_id: val
-          }
+            proc_id: val,
+          },
         })
-          .then(payload => {
+          .then((payload) => {
             this.setState({ activeKey: 0 });
             this.getGroup();
           })
-          .catch(error => message.error(error.message))
+          .catch((error) => message.error(error.message))
       : message.error('默认分组无法删除');
+  };
+
+  getImageChecked = (val) => {
+    console.log(val);
+    this.setState({ checkedImage: val });
+  };
+
+  handldeChange = (val) => {
+    const { onChange } = this.props;
+    const { pictures } = this.state;
+    const outArr = pictures.filter(({ image_id }) => val.includes(image_id));
+
+    onChange && onChange(outArr);
   };
 
   componentDidMount() {
@@ -437,33 +453,21 @@ export default class App extends React.Component {
     this.getPictures();
   }
 
-  handleClick = e => {
+  handleClick = (e) => {
     e.stopPropagation();
     this.setState({ activeKey: e.currentTarget.dataset.key, activeName: e.currentTarget.dataset.name }, () => {
       this.getPictures();
     });
   };
 
-  getImageChecked = val => {
-    const { onChange } = this.props;
-
-    this.setState({ imageArray: val });
-
-    if (val.length <= 15) {
-      onChange && onChange(val);
-    } else {
-      message.error('请选择不超过15张图片');
-    }
-  };
-
   render() {
-    const { group, activeKey, activeName, total, pictures, imageArray } = this.state;
+    const { group, activeKey, activeName, total, pictures, checkedImage } = this.state;
 
     return (
       <div className={styles.pictures}>
         <div className={styles.groupLeft}>
           <ul>
-            {group.map(item => (
+            {group.map((item) => (
               <li
                 key={item.proc_id}
                 data-key={item.proc_id}
@@ -492,8 +496,8 @@ export default class App extends React.Component {
         <div className={styles.groupRight}>
           <h2>
             <span>
-              {group.filter(item => item.proc_id == activeKey).length &&
-                group.filter(item => item.proc_id == activeKey)[0].term_name}
+              {group.filter((item) => item.proc_id == activeKey).length &&
+                group.filter((item) => item.proc_id == activeKey)[0].term_name}
             </span>
             <UploadFile
               onChange={this.getPictures}
@@ -502,27 +506,32 @@ export default class App extends React.Component {
               yztoken={this.props.yztoken}
             ></UploadFile>
           </h2>
-          <ul>
-            {pictures.map(item => (
-              <li key={item.proc_id}>
-                <img src={item.image_url}></img>
-                <GetImageCheck
-                  array={imageArray}
-                  value={item.image_id}
-                  url={item.image_url}
-                  name={item.name}
-                  onChange={val => this.getImageChecked(val)}
-                ></GetImageCheck>
-                <EditPictures onChange={this.getPictures} id={this.props.id} data={item} group={group}></EditPictures>
-                <Divider type="vertical" />
-                <a>链接</a>
-                <Divider type="vertical" />
-                <Popconfirm title="确认要删除图片吗？" onConfirm={() => this.handleDelete(item.proc_id)} cancelText="取消">
-                  <a>删除</a>
-                </Popconfirm>
-              </li>
-            ))}
-          </ul>
+          <Checkbox.Group style={{ width: '100%' }} onChange={this.handldeChange}>
+            <ul className={styles.imgCheckBox}>
+              {pictures.map((item) => (
+                <li key={item.proc_id}>
+                  <img src={item.image_url}></img>
+                  {/* <GetImageCheck
+                    checkedImage={checkedImage}
+                    value={item.image_id}
+                    url={item.image_url}
+                    name={item.name}
+                    onChange={this.getImageChecked}
+                  ></GetImageCheck> */}
+                  <Checkbox className={styles.checkName} value={item.image_id}>
+                    {item.name}
+                  </Checkbox>
+                  <EditPictures onChange={this.getPictures} id={this.props.id} data={item} group={group}></EditPictures>
+                  <Divider type="vertical" />
+                  <a>链接</a>
+                  <Divider type="vertical" />
+                  <Popconfirm title="确认要删除图片吗？" onConfirm={() => this.handleDelete(item.proc_id)} cancelText="取消">
+                    <a>删除</a>
+                  </Popconfirm>
+                </li>
+              ))}
+            </ul>
+          </Checkbox.Group>
           <Divider />
           <div className={styles.actionBottom}>
             <Pagination
