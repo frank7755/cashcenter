@@ -395,10 +395,11 @@ class EditableTable extends React.Component {
 
     data.length &&
       data.forEach((item) => {
-        console.log(item.newPrice_num);
-        sumCount += +item.count;
-        sumAmount += +item.price_num;
-        sumPay += item.newPrice_num ? +item.newPrice_num : +item.price_num;
+        sumCount += Number(item.count);
+        sumAmount = (Number(sumAmount) + Number(item.price_num)).toFixed(2);
+        sumPay = item.newPrice_num
+          ? (Number(sumPay) + Number(item.newPrice_num)).toFixed(2)
+          : (Number(sumPay) + Number(item.price_num)).toFixed(2);
       });
 
     return (
@@ -539,6 +540,20 @@ class PayDrawer extends React.Component {
     staff_name: '',
     vip_id: '',
     vip_name: '',
+    value: 1,
+    userSettingDiscount: 1,
+  };
+
+  onChange = (e) => {
+    this.setState({
+      value: e.target.value,
+    });
+  };
+
+  handleDiscountChange = (val) => {
+    this.setState({
+      userSettingDiscount: val,
+    });
   };
 
   @debounce(150)
@@ -593,7 +608,7 @@ class PayDrawer extends React.Component {
   };
 
   resetData = () => {
-    this.setState({ staff_id: '', staff_name: '', vip_id: '' });
+    this.setState({ staff_id: '', staff_name: '', vip_id: '', value: 1, userSettingDiscount: 1 });
   };
 
   resetOutTable = () => {
@@ -604,7 +619,7 @@ class PayDrawer extends React.Component {
   };
 
   render() {
-    const { GuideSource, VipSource, staff_id, staff_name, vip_id } = this.state;
+    const { GuideSource, VipSource, staff_id, staff_name, vip_id, userSettingDiscount, value } = this.state;
     const { sumAmount, sumPay, sumCount } = this.props;
 
     return (
@@ -707,9 +722,38 @@ class PayDrawer extends React.Component {
                   )}
                 </FormItem>
               </section>
+              <FormItem label="整单折扣">
+                {getFieldDecorator('order_discount', {
+                  initialValue: 1,
+                  rules: [{ required: true, message: '请选择或输入整单折扣' }],
+                })(
+                  <Radio.Group onChange={this.onChange}>
+                    <Radio value={1}>不打折</Radio>
+                    <Radio value={0.9}>9折</Radio>
+                    <Radio value={0.8}>8折</Radio>
+                    <Radio value={0.7}>7折</Radio>
+                    <Radio value={0.5}>5折</Radio>
+                    <Radio value={0}>
+                      自定义折扣
+                      {this.state.value == 0 && (
+                        <InputNumber
+                          min={0}
+                          max={1}
+                          precision={2}
+                          placeholder="自定义折扣"
+                          value={this.state.userSettingDiscount}
+                          style={{ width: 120, marginLeft: 15 }}
+                          onChange={this.handleDiscountChange}
+                        ></InputNumber>
+                      )}
+                    </Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
               <FormItem label="优惠价格">
                 {getFieldDecorator('sal', {
-                  initialValue: sumPay,
+                  initialValue:
+                    value == 0 ? parseFloat(sumPay * userSettingDiscount).toFixed(2) : parseFloat(sumPay * value).toFixed(2),
                   rules: [{ required: true, message: '请输入最终优惠价格' }],
                 })(
                   <Input

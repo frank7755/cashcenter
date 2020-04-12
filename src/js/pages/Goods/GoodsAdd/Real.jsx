@@ -47,8 +47,9 @@ class GetImageGroup extends React.Component {
     const { onChange } = this.props;
 
     const { imgData } = this.state;
+    console.log(imgData);
 
-    this.setState({ visible: false, urlList: imgData.map((item) => item.url) });
+    this.setState({ visible: false, urlList: imgData.map((item) => item.image_url) });
 
     onChange && onChange(imgData);
   };
@@ -59,7 +60,7 @@ class GetImageGroup extends React.Component {
 
   render() {
     const { visible, urlList } = this.state;
-    console.log(urlList);
+
     return (
       <div>
         <Button onClick={this.showModal}>选择商品图</Button>
@@ -217,7 +218,7 @@ export default class App extends React.Component {
 
   getImageId = (val) => {
     console.log(val);
-    this.setState({ imgList: val });
+    this.setState({ imgList: val.map((item) => item.image_id) });
   };
 
   handleChange = (editorState) => {
