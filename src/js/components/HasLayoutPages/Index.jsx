@@ -114,6 +114,18 @@ class App extends React.Component {
     this.setState({ openKeys });
   };
 
+  componentDidMount() {
+    if (menu.filter(({ children }) => children.some(({ src }) => this.props.location.pathname == src)).length > 0) {
+      this.setState({
+        openKeys: [
+          menu.filter((item) => item.children.some(({ src }) => this.props.location.pathname == src))[0].key.toString(),
+        ],
+      });
+    } else {
+      this.setState({ openKeys: [] });
+    }
+  }
+
   handleLogout = () => {
     request('/api/login_out').then(this.props.history.push('/login'));
     store.remove(storeToken);
@@ -165,6 +177,15 @@ class App extends React.Component {
       </Menu>
     );
 
+    const wechatOverLay = (
+      <Menu style={{ width: '200px', textAlign: 'center' }}>
+        <Menu.Item>
+          <p>请使用微信扫描二维码</p>
+          <Avatar src={require('~images/wechatpro.png')} size={180} style={{ display: 'block', margin: '10px auto' }}></Avatar>
+        </Menu.Item>
+      </Menu>
+    );
+
     return draw ? (
       <Layout style={{ height: '100%', overflow: 'hidden' }}>
         <Sider
@@ -187,6 +208,8 @@ class App extends React.Component {
             mode="inline"
             className={styles.menu}
             defaultSelectedKeys={'/'}
+            onOpenChange={this.onOpenChange}
+            onSelect={this.handleSelect}
             defaultOpenKeys={this.state.openKeys}
             selectedKeys={[`${path}`]}
           >
@@ -213,9 +236,15 @@ class App extends React.Component {
         <Layout style={{ marginLeft: 200 }}>
           <Header className={styles.header}>
             <ul>
+              <Dropdown overlay={wechatOverLay} placement="bottomRight">
+                <li>
+                  <Avatar src={require('~images/programe.jpg')} size={30} style={{ marginRight: 10 }} />
+                  <span>小程序</span>
+                </li>
+              </Dropdown>
               <Dropdown overlay={userSlideMenu}>
                 <li>
-                  <Avatar style={{ backgroundColor: '#87d068', marginRight: 10 }} icon="user" />
+                  <Avatar style={{ backgroundColor: '#00d0f9', marginRight: 10 }} icon="user" />
                   {store.get(tel)}
                 </li>
               </Dropdown>

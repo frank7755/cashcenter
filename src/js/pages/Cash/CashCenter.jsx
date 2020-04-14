@@ -62,7 +62,7 @@ class EditableCell extends React.Component {
 
 @Form.create()
 class SingleDiscount extends React.Component {
-  state = { visible: false };
+  state = { visible: false, value: 1, userSettingDiscount: 1 };
 
   showModal = () => {
     this.setState({
@@ -74,8 +74,17 @@ class SingleDiscount extends React.Component {
     const { data, onChange } = this.props;
 
     this.props.form.validateFields((error, values) => {
+      const { userSettingDiscount } = this.state;
+
       if (!error) {
-        const newData = { ...data, newPrice_num: values.price_num * values.Discount_type };
+        const newData = {
+          ...data,
+          newPrice_num:
+            userSettingDiscount != 1
+              ? (Number(userSettingDiscount) * values.price_num).toFixed(2)
+              : (values.price_num * values.Discount_type).toFixed(2),
+        };
+        console.log(Number(userSettingDiscount) * values.price_num);
 
         onChange && onChange(newData);
       }
@@ -92,6 +101,18 @@ class SingleDiscount extends React.Component {
     this.props.form.resetFields();
   };
 
+  onChange = (e) => {
+    this.setState({
+      value: e.target.value,
+    });
+  };
+
+  handleDiscountChange = (val) => {
+    this.setState({
+      userSettingDiscount: val,
+    });
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { data } = this.props;
@@ -101,7 +122,13 @@ class SingleDiscount extends React.Component {
         <a style={{ marginRight: 10, color: '#31c105' }} onClick={this.showModal}>
           优惠
         </a>
-        <Modal title="单品优惠" visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+        <Modal
+          title="单品优惠"
+          style={{ width: 'auto' }}
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
           <Form>
             <FormItem label="优惠价格">
               {getFieldDecorator('price_num', {
@@ -112,12 +139,26 @@ class SingleDiscount extends React.Component {
             </FormItem>
             <FormItem label="折扣">
               {getFieldDecorator('Discount_type', { initialValue: 1 })(
-                <Radio.Group>
+                <Radio.Group onChange={this.onChange}>
                   <Radio value={1}>不打折</Radio>
-                  <Radio value={0.95}>95折</Radio>
-                  <Radio value={0.85}>85折</Radio>
-                  <Radio value={0.75}>7折</Radio>
+                  <Radio value={0.9}>9折</Radio>
+                  <Radio value={0.8}>8折</Radio>
+                  <Radio value={0.7}>7折</Radio>
                   <Radio value={0.5}>5折</Radio>
+                  <Radio value={0} style={{ lineHeight: '50px' }}>
+                    自定义折扣
+                    {this.state.value == 0 && (
+                      <InputNumber
+                        min={0}
+                        max={1}
+                        precision={2}
+                        placeholder="自定义折扣"
+                        value={this.state.userSettingDiscount}
+                        style={{ width: 120, marginLeft: 15 }}
+                        onChange={this.handleDiscountChange}
+                      ></InputNumber>
+                    )}
+                  </Radio>
                 </Radio.Group>
               )}
             </FormItem>
@@ -693,9 +734,9 @@ class PayDrawer extends React.Component {
                 </FormItem>
               </section>
               <section>
-                <FormItem label="订单金额">
+                <FormItem label="实付金额">
                   {getFieldDecorator('pur_sal', {
-                    initialValue: sumAmount,
+                    initialValue: sumPay,
                     rules: [{ required: true }],
                   })(<Input disabled suffix="元"></Input>)}
                 </FormItem>

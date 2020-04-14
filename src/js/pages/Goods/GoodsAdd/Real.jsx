@@ -23,7 +23,7 @@ const formItemLayout = {
 };
 
 class GetImageGroup extends React.Component {
-  state = { visible: false, urlList: [], imgData: [] };
+  state = { visible: false, imgData: [], checkedID: [] };
 
   showModal = () => {
     this.setState({
@@ -40,6 +40,7 @@ class GetImageGroup extends React.Component {
   getImageUrl = (val) => {
     this.setState({
       imgData: val,
+      checkedID: val.map((item) => item.image_id),
     });
   };
 
@@ -47,39 +48,43 @@ class GetImageGroup extends React.Component {
     const { onChange } = this.props;
 
     const { imgData } = this.state;
-    console.log(imgData);
 
-    this.setState({ visible: false, urlList: imgData.map((item) => item.image_url) });
+    this.setState({ visible: false });
 
     onChange && onChange(imgData);
   };
 
   handleRemove = (k) => {
-    this.setState({ urlList: this.state.urlList.filter((item, index) => index != k) });
+    const { imgData, checkedID } = this.state;
+
+    this.setState({
+      imgData: imgData.filter((item) => item.image_id != k),
+      checkedID: checkedID.filter((item) => item != k),
+    });
   };
 
   render() {
-    const { visible, urlList } = this.state;
+    const { visible, imgData, checkedID } = this.state;
 
     return (
       <div>
         <Button onClick={this.showModal}>选择商品图</Button>
         <p style={{ color: '#999', marginTop: 5, marginBottom: 12 }}>最多选择15张图片</p>
         <div className={styles.imgList}>
-          {urlList.length > 0 &&
-            urlList.map((item, index) => (
+          {imgData.length > 0 &&
+            imgData.map((item) => (
               <span
                 style={{ position: 'relative', display: 'inline-block', marginRight: 24, marginBottom: 12, marginBottom: 12 }}
-                key={index}
+                key={item.image_id}
               >
                 <Avatar
-                  src={item}
+                  src={item.image_url}
                   size={60}
                   style={{ border: '1px solid #999' }}
                   shape="square"
                   className={styles.avatar}
                 ></Avatar>
-                <Icon type="close-circle" onClick={() => this.handleRemove(index)} className={styles.close}></Icon>
+                <Icon type="close-circle" onClick={() => this.handleRemove(item.image_id)} className={styles.close}></Icon>
               </span>
             ))}
         </div>
@@ -91,7 +96,12 @@ class GetImageGroup extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <Picture id={this.props.id} yztoken={this.props.yztoken} onChange={this.getImageUrl}></Picture>
+          <Picture
+            id={this.props.id}
+            yztoken={this.props.yztoken}
+            onChange={this.getImageUrl}
+            checkedID={this.state.checkedID}
+          ></Picture>
         </Modal>
       </div>
     );
@@ -180,7 +190,6 @@ export default class App extends React.Component {
     const { ruleSetData, imgList, editorState } = this.state;
 
     this.props.form.validateFields((err, value) => {
-      console.log(value);
       if (!err) {
         request('/api/t_goods/insert', {
           headers: { 'Content-Type': 'application/json;' },
@@ -217,7 +226,6 @@ export default class App extends React.Component {
   };
 
   getImageId = (val) => {
-    console.log(val);
     this.setState({ imgList: val.map((item) => item.image_id) });
   };
 
@@ -313,12 +321,7 @@ export default class App extends React.Component {
               </p>
             </Col>
             <Col span={10}>
-              <GetImageGroup
-                id={this.props.id}
-                yztoken={this.props.yztoken}
-                selectedImage={imgList}
-                onChange={this.getImageId}
-              ></GetImageGroup>
+              <GetImageGroup id={this.props.id} yztoken={this.props.yztoken} onChange={this.getImageId}></GetImageGroup>
             </Col>
           </Row>
           <FormItem label="商品分组">

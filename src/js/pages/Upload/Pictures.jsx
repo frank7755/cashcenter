@@ -6,8 +6,6 @@ import { Upload, Popconfirm, Icon, Checkbox, Divider, Pagination, Button, Modal,
 
 const FormItem = Form.Item;
 const { Option } = Select;
-let newArray = [];
-
 @Form.create()
 class UploadFile extends React.Component {
   state = {
@@ -46,6 +44,7 @@ class UploadFile extends React.Component {
               });
               message.success('上传成功');
               onChange && onChange();
+              this.props.form.resetFields();
             } else {
               message.error(res.msg);
               this.props.form.resetFields();
@@ -334,37 +333,7 @@ class GroupEdit extends React.Component {
     );
   }
 }
-
-class GetImageCheck extends React.PureComponent {
-  handleChecked = (e) => {
-    const { checkedImage, onChange } = this.props;
-
-    if (e.target.checked) {
-      checkedImage.unshift({
-        id: this.props.value,
-        url: this.props.url,
-      });
-      onChange && onChange(checkedImage);
-    } else {
-      const newArray = checkedImage.filter((item) => item.id != this.props.value);
-      onChange && onChange(newArray);
-    }
-  };
-
-  render() {
-    const { name, checkedImage } = this.props;
-    console.log(checkedImage);
-    return (
-      <Checkbox
-        onChange={this.handleChecked}
-        checked={checkedImage.some((item) => (item.id = this.props.value))}
-        className={styles.checkName}
-      >
-        {name}
-      </Checkbox>
-    );
-  }
-}
+let storeArr = [];
 
 export default class App extends React.Component {
   state = {
@@ -372,9 +341,10 @@ export default class App extends React.Component {
     activeName: '未分组',
     group: [],
     item: [],
-    total: 0,
+    total: null,
     pictures: [],
-    checkedImage: [],
+    current: 1,
+    checkedArr: [],
   };
 
   getGroup = () => {
@@ -393,6 +363,10 @@ export default class App extends React.Component {
       .catch((error) => message.error(error.message));
   };
 
+  componentWillUnmount() {
+    storeArr = [];
+  }
+
   getPictures = (page, pageSize) => {
     request('/api/tmaterialcenter/list/select', {
       method: 'post',
@@ -403,7 +377,7 @@ export default class App extends React.Component {
         page: page || 1,
         pageSize: pageSize || 20,
       },
-    }).then((payload) => this.setState({ total: payload.total, pictures: payload.pageData }));
+    }).then((payload) => this.setState({ total: payload.total, pictures: payload.pageData, current: payload.page }));
   };
 
   handleDelete = (val) => {
@@ -435,17 +409,17 @@ export default class App extends React.Component {
       : message.error('默认分组无法删除');
   };
 
-  getImageChecked = (val) => {
-    console.log(val);
-    this.setState({ checkedImage: val });
-  };
-
-  handldeChange = (val) => {
-    const { onChange } = this.props;
+  handleChecked = (e) => {
+    const { onChange, checkedID } = this.props;
     const { pictures } = this.state;
-    const outArr = pictures.filter(({ image_id }) => val.includes(image_id));
 
-    onChange && onChange(outArr);
+    if (e.target.checked) {
+      storeArr.length < 15 ? storeArr.push(e.target.checkedValue) : message.error('请选择不超过15张图片');
+    } else {
+      storeArr = storeArr.filter((item) => item.image_id != e.target.value);
+    }
+
+    onChange && onChange(storeArr);
   };
 
   componentDidMount() {
@@ -461,7 +435,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { group, activeKey, activeName, total, pictures, checkedImage } = this.state;
+    const { group, activeKey, activeName, total, pictures, current } = this.state;
 
     return (
       <div className={styles.pictures}>
@@ -506,19 +480,17 @@ export default class App extends React.Component {
               yztoken={this.props.yztoken}
             ></UploadFile>
           </h2>
-          <Checkbox.Group style={{ width: '100%' }} onChange={this.handldeChange}>
+          <Checkbox.Group style={{ width: '100%' }} value={this.props.checkedID}>
             <ul className={styles.imgCheckBox}>
               {pictures.map((item) => (
                 <li key={item.proc_id}>
                   <img src={item.image_url}></img>
-                  {/* <GetImageCheck
-                    checkedImage={checkedImage}
+                  <Checkbox
+                    className={styles.checkName}
+                    checkedValue={item}
                     value={item.image_id}
-                    url={item.image_url}
-                    name={item.name}
-                    onChange={this.getImageChecked}
-                  ></GetImageCheck> */}
-                  <Checkbox className={styles.checkName} value={item.image_id}>
+                    onChange={this.handleChecked}
+                  >
                     {item.name}
                   </Checkbox>
                   <EditPictures onChange={this.getPictures} id={this.props.id} data={item} group={group}></EditPictures>
@@ -537,8 +509,7 @@ export default class App extends React.Component {
             <Pagination
               showQuickJumper
               total={total}
-              defaultCurrent={1}
-              defaultPageSize={20}
+              current={current}
               onChange={(page, pageSize) => this.getPictures(page, pageSize)}
             ></Pagination>
           </div>

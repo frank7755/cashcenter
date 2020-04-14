@@ -283,7 +283,7 @@ class ChangeGroup extends React.Component {
             id: this.props.id,
             yz_token_info: this.props.yztoken,
             item_id: this.props.item_id,
-            tag_ids: value.tag_ids[2]
+            tag_ids: value.tag_ids[1]
           }
         })
           .then(paylaod => {
