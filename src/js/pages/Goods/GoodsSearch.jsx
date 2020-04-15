@@ -20,7 +20,7 @@ import {
   message,
   Avatar,
   Modal,
-  Cascader
+  Cascader,
 } from 'antd';
 import {
   getCurrMonth,
@@ -29,7 +29,7 @@ import {
   getLastWeek,
   getToday,
   getLast7Days,
-  getYesterday
+  getYesterday,
 } from '~js/utils/date-fns';
 
 const FormItem = Form.Item;
@@ -40,7 +40,7 @@ const { Option } = Select;
 @Form.create()
 class GoodsAction extends React.PureComponent {
   state = {
-    visible: false
+    visible: false,
   };
 
   static expando = 0;
@@ -53,7 +53,7 @@ class GoodsAction extends React.PureComponent {
     this.setState({ visible: false });
   };
 
-  handleAddSubmit = e => {
+  handleAddSubmit = (e) => {
     const { refresh, form } = this.props;
 
     form.validateFields((err, values) => {
@@ -61,8 +61,8 @@ class GoodsAction extends React.PureComponent {
         this.setState({ visible: false });
         request('/api/insert_goods', {
           method: 'post',
-          body: { ...values, id: this.props.id, user_name: this.props.user_name, user_id: this.props.user_id, status: 0 }
-        }).then(payload => {
+          body: { ...values, id: this.props.id, user_name: this.props.user_name, user_id: this.props.user_id, status: 0 },
+        }).then((payload) => {
           message.success('添加成功！');
           form.resetFields();
           refresh();
@@ -107,7 +107,7 @@ class GoodsAction extends React.PureComponent {
               <FormItem label="商品名称">
                 {getFieldDecorator('name', {
                   initialValue: data && data.name,
-                  rules: [{ required: true, message: '请输入商品名称' }]
+                  rules: [{ required: true, message: '请输入商品名称' }],
                 })(<Input placeholder="请输入商品名称" />)}
               </FormItem>
             </section>
@@ -118,9 +118,9 @@ class GoodsAction extends React.PureComponent {
                   rules: [{ required: true, message: '请输入库存量' }],
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入库存量',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入库存量" />)}
               </FormItem>
             </section>
@@ -131,9 +131,9 @@ class GoodsAction extends React.PureComponent {
                   rules: [{ required: true, message: '请输入销售价格' }],
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入销售价格',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入销售价格" />)}
               </FormItem>
             </section>
@@ -144,9 +144,9 @@ class GoodsAction extends React.PureComponent {
                   rules: [{ required: true, message: '请输入库存下线' }],
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入库存下线',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入库存下线" />)}
               </FormItem>
             </section>
@@ -154,7 +154,7 @@ class GoodsAction extends React.PureComponent {
               <FormItem label="商品单位">
                 {getFieldDecorator('unit', {
                   initialValue: data && data.unit,
-                  rules: [{ required: true, message: '请输入商品单位' }]
+                  rules: [{ required: true, message: '请输入商品单位' }],
                 })(<Input placeholder="请输入商品单位" />)}
               </FormItem>
             </section>
@@ -164,58 +164,58 @@ class GoodsAction extends React.PureComponent {
                   initialValue: data && data.code_id,
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入货单编号',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入货单编号" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="供应商条码">
                 {getFieldDecorator('s_code', {
-                  initialValue: data && data.s_code
+                  initialValue: data && data.s_code,
                 })(<Input placeholder="请输入供应商条码" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="自定义条码">
                 {getFieldDecorator('u_code', {
-                  initialValue: data && data.u_code
+                  initialValue: data && data.u_code,
                 })(<Input placeholder="请输入自定义条码" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品链接">
                 {getFieldDecorator('s_link', {
-                  initialValue: data && data.s_link
+                  initialValue: data && data.s_link,
                 })(<Input placeholder="请输入商品链接" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品图片">
                 {getFieldDecorator('s_photo', {
-                  initialValue: data && data.s_photo
+                  initialValue: data && data.s_photo,
                 })(<Input placeholder="请输入图片地址" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品分类">
                 {getFieldDecorator('type_id', {
-                  initialValue: data && data.type_id
+                  initialValue: data && data.type_id,
                 })(<Input placeholder="请输入商品分类" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品品类">
                 {getFieldDecorator('unit_pinlei', {
-                  initialValue: data && data.unit_pinlei
+                  initialValue: data && data.unit_pinlei,
                 })(<Input placeholder="请输入商品品类" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="阈值提醒">
                 {getFieldDecorator('threshold_remind', {
-                  initialValue: data && data.threshold_remind
+                  initialValue: data && data.threshold_remind,
                 })(<Input placeholder="请输入阈值" />)}
               </FormItem>
             </section>
@@ -229,12 +229,12 @@ class GoodsAction extends React.PureComponent {
                 textAlign: 'right',
                 left: 0,
                 background: '#fff',
-                borderRadius: '0 0 4px 4px'
+                borderRadius: '0 0 4px 4px',
               }}
             >
               <Button
                 style={{
-                  marginRight: 8
+                  marginRight: 8,
                 }}
                 onClick={this.closeDrawer}
               >
@@ -255,22 +255,22 @@ class GoodsAction extends React.PureComponent {
 class ChangeGroup extends React.Component {
   state = {
     visible: false,
-    data: []
+    data: [],
   };
 
   showModal = () => {
-    request('/api/t_goods_fz_select').then(payload => {
+    request('/api/t_goods_fz_select').then((payload) => {
       this.setState({ data: payload.pageData, visible: true });
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
-  getGroupData = val => {
+  getGroupData = (val) => {
     this.setState({ groupData: val.toString() });
   };
 
@@ -283,14 +283,14 @@ class ChangeGroup extends React.Component {
             id: this.props.id,
             yz_token_info: this.props.yztoken,
             item_id: this.props.item_id,
-            tag_ids: value.tag_ids[1]
-          }
+            tag_ids: value.tag_ids[1],
+          },
         })
-          .then(paylaod => {
+          .then((paylaod) => {
             message.success('修改成功');
             this.setState({ visible: false });
           })
-          .catch(error => message.error(error.message));
+          .catch((error) => message.error(error.message));
       }
     });
   };
@@ -315,7 +315,7 @@ class ChangeGroup extends React.Component {
             <FormItem label="选择分组">
               {getFieldDecorator('tag_ids', {
                 initialValue: this.props.originVal ? this.props.originVal.split(',') : [],
-                rules: [{ required: true, message: '请选择分组' }]
+                rules: [{ required: true, message: '请选择分组' }],
               })(<Cascader options={data} />)}
             </FormItem>
           </Form>
@@ -334,52 +334,52 @@ class GoodsTable extends React.Component {
       width: 200,
       render(name, record) {
         return (
-          <Fragment>
+          <div className={styles.goodsName}>
             <Avatar
               src={record.pic_url}
               size={60}
               style={{ marginRight: 10, border: '1px solid #666' }}
               shape="square"
             ></Avatar>
-            <a href={record.share_url} target="_blank">
+            <a href={record.share_url} target="_blank" style={{ lineHeight: 1.5 }}>
               {name}
             </a>
-          </Fragment>
+          </div>
         );
-      }
+      },
     },
     {
       title: '库存',
       dataIndex: 'quantity',
-      width: 200
+      width: 100,
     },
     {
       title: '价格',
       dataIndex: 'price',
-      width: 200,
+      width: 150,
       render(seling_price) {
         return '￥' + formatThousands(seling_price);
-      }
+      },
     },
     {
       title: '状态',
       dataIndex: 'is_display',
-      width: 200,
+      width: 120,
       render(is_display) {
         return is_display == '1' ? (
           <span style={{ color: '#31c105' }}>已上架</span>
         ) : (
           <span style={{ color: '#fc5050' }}>未上架</span>
         );
-      }
+      },
     },
     {
       title: '创建时间',
       dataIndex: 'create_time',
-      width: 200,
+      width: 120,
       render(create_time) {
         return moment(create_time).format('YYYY-MM-DD');
-      }
+      },
     },
     {
       title: '操作',
@@ -416,8 +416,8 @@ class GoodsTable extends React.Component {
             </Popconfirm>
           </Fragment>
         );
-      }
-    }
+      },
+    },
   ];
 
   handleDelete = (id, item_id) => {
@@ -426,14 +426,14 @@ class GoodsTable extends React.Component {
       body: {
         id: id,
         item_id: item_id,
-        yz_token_info: this.props.yztoken
-      }
+        yz_token_info: this.props.yztoken,
+      },
     })
-      .then(payload => {
+      .then((payload) => {
         this.refresh();
         message.success('删除成功');
       })
-      .catch(error => message.error(error.message));
+      .catch((error) => message.error(error.message));
   };
   handleOn = (id, item_id) => {
     const { table } = this.props;
@@ -444,13 +444,13 @@ class GoodsTable extends React.Component {
       body: {
         id: id,
         item_id: item_id,
-        yz_token_info: this.props.yztoken
-      }
+        yz_token_info: this.props.yztoken,
+      },
     })
-      .then(payload => {
+      .then((payload) => {
         this.refresh();
       })
-      .catch(error => message.error(error.message));
+      .catch((error) => message.error(error.message));
   };
 
   handleOff = (id, item_id) => {
@@ -462,13 +462,13 @@ class GoodsTable extends React.Component {
       body: {
         id: id,
         item_id: item_id,
-        yz_token_info: this.props.yztoken
-      }
+        yz_token_info: this.props.yztoken,
+      },
     })
-      .then(payload => {
+      .then((payload) => {
         this.refresh();
       })
-      .catch(error => message.error(error.message));
+      .catch((error) => message.error(error.message));
   };
 
   handleSearch = ({ dateRange = [], ...rest }) => {
@@ -485,7 +485,7 @@ class GoodsTable extends React.Component {
       昨天: getYesterday(),
       本周: getCurrWeek(),
       上周: getLastWeek(),
-      本月: getCurrMonth()
+      本月: getCurrMonth(),
     };
   }
 
@@ -538,7 +538,7 @@ class GoodsTable extends React.Component {
                     <span className={styles.rowItem}>
                       <label>选择日期：</label>
                       {getFieldDecorator('dateRange', {
-                        initialValue: [moment().subtract(1, 'year'), moment()]
+                        initialValue: [moment().subtract(1, 'year'), moment()],
                       })(
                         <RangePicker allowClear={false} style={{ width: 'calc(100% - 80px)' }} ranges={this.getDateRanges()} />
                       )}
@@ -580,11 +580,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div className={styles.goodManage}>
-        <GoodsTable
-          source={`/api/t_goods/select`}
-          id={this.props.id}
-          yztoken={this.props.yztoken}
-        ></GoodsTable>
+        <GoodsTable source={`/api/t_goods/select`} id={this.props.id} yztoken={this.props.yztoken}></GoodsTable>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import styles from '~css/Goods/GoodsEdit.module.less';
-import { Form, Input, Select, Upload, Icon, Modal, Button, Table, Row, Col, Cascader, Avatar, message } from 'antd';
+import { Form, Input, Select, Upload, Icon, Modal, Button, Table, Row, Col, Cascader, Avatar, message, Tooltip } from 'antd';
 import request from '~js/utils/request';
 import Picture from '../Upload/Pictures';
 import BraftEditor from 'braft-editor';
@@ -15,64 +15,82 @@ const { Option } = Select;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 }
+    sm: { span: 4 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 10 }
-  }
+    sm: { span: 10 },
+  },
 };
-
 class GetImageGroup extends React.Component {
-  state = { visible: false, urlList: [] };
+  state = { visible: false, imgData: [], checkedID: [] };
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ urlList: nextProps.imgList ? nextProps.imgList : [] });
+    if (nextProps.imgList != this.props.imgList) {
+      this.setState({ imgData: nextProps.imgList, checkedID: nextProps.imgList.map((item) => item.image_id) });
+    }
   }
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
-  getImageUrl = val => {
-    const { onChange } = this.props;
-
+  getImageUrl = (val) => {
     this.setState({
-      urlList: val.map(item => item.url)
+      imgData: val,
+      checkedID: val.map((item) => item.image_id),
     });
-
-    onChange && onChange(val);
   };
 
   handleOk = () => {
+    const { onChange } = this.props;
+
+    const { imgData } = this.state;
+
     this.setState({ visible: false });
+
+    onChange && onChange(imgData);
   };
 
-  handleRemove = k => {
-    this.setState({ urlList: this.state.urlList.filter((item, index) => index != k) });
+  handleRemove = (k) => {
+    const { imgData, checkedID } = this.state;
+
+    this.setState({
+      imgData: imgData.filter((item) => item.image_id != k),
+      checkedID: checkedID.filter((item) => item != k),
+    });
   };
 
   render() {
-    const { visible, urlList } = this.state;
+    const { visible, imgData, checkedID } = this.state;
 
     return (
       <div>
         <Button onClick={this.showModal}>选择商品图</Button>
         <p style={{ color: '#999', marginTop: 5, marginBottom: 12 }}>最多选择15张图片</p>
         <div className={styles.imgList}>
-          {urlList.length > 0 &&
-            urlList.map((item, index) => (
-              <span style={{ position: 'relative', display: 'inline-block', marginRight: 24, marginBottom: 12 }} key={index}>
-                <Avatar src={item.image_url} size={60} style={{ border: '1px solid #999' }} shape="square"></Avatar>
-                <Icon type="close-circle" onClick={() => this.handleRemove(index)} className={styles.close}></Icon>
+          {imgData.length > 0 &&
+            imgData.map((item) => (
+              <span
+                style={{ position: 'relative', display: 'inline-block', marginRight: 24, marginBottom: 12, marginBottom: 12 }}
+                key={item.image_id}
+              >
+                <Avatar
+                  src={item.image_url}
+                  size={60}
+                  style={{ border: '1px solid #999' }}
+                  shape="square"
+                  className={styles.avatar}
+                ></Avatar>
+                <Icon type="close-circle" onClick={() => this.handleRemove(item.image_id)} className={styles.close}></Icon>
               </span>
             ))}
         </div>
@@ -84,7 +102,13 @@ class GetImageGroup extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <Picture id={this.props.id} onChange={val => this.getImageUrl(val)}></Picture>
+          <Picture
+            id={this.props.id}
+            yztoken={this.props.yztoken}
+            onChange={this.getImageUrl}
+            checkedID={checkedID}
+            checkedData={imgData}
+          ></Picture>
         </Modal>
       </div>
     );
@@ -96,20 +120,20 @@ class RictTextImages extends React.Component {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
 
     request('/api/t_goods_image_select', {
       method: 'post',
       body: {
-        id: 2
-      }
-    }).then(payload => this.setState({ imgList: payload.pageData }));
+        id: 2,
+      },
+    }).then((payload) => this.setState({ imgList: payload.pageData }));
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -135,7 +159,7 @@ class RictTextImages extends React.Component {
         </button>
         <Modal title="选择图片" width={800} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
           {imgList &&
-            imgList.map(item => (
+            imgList.map((item) => (
               <div className={styles.imageChoose} key={item.image_id}>
                 <span
                   onClick={() => this.handleChecked(item.image_id, item.image_url)}
@@ -163,11 +187,11 @@ export default class App extends React.Component {
     imgList: [],
     goodsData: [],
     origin_imgList: [],
-    item_id: ''
+    item_id: '',
   };
 
   componentDidMount() {
-    request('/api/t_goods_fz_select').then(payload => {
+    request('/api/t_goods_fz_select').then((payload) => {
       this.setState({ goodsSort: payload.pageData });
     });
 
@@ -175,15 +199,15 @@ export default class App extends React.Component {
       method: 'post',
       body: {
         id: this.props.id,
-        item_id: this.props.match.params.id
-      }
-    }).then(payload => {
+        item_id: this.props.match.params.id,
+      },
+    }).then((payload) => {
       this.setState({
         goodsData: payload.pageData,
         editorState: BraftEditor.createEditorState(payload.pageData.desc),
         kv_list: payload.kv_list,
         origin_imgList: payload.pageData.photo_info,
-        item_id: payload.pageData.item_id
+        item_id: payload.pageData.item_id,
       });
     });
   }
@@ -204,47 +228,47 @@ export default class App extends React.Component {
             item_id: item_id,
             status: 0,
             item_type: 0,
-            image_ids: imgList.length > 0 ? imgList.join(',') : origin_imgList.map(item => item.image_id).join(','),
+            image_ids: imgList.length > 0 ? imgList.join(',') : origin_imgList.map((item) => item.image_id).join(','),
             tag_ids: value.tag_ids[2],
             sku_stocks: ruleSetData,
-            desc: editorState.toHTML()
-          }
+            desc: editorState.toHTML(),
+          },
         })
           .then(() => {
             message.success('修改成功');
             this.props.history.push('/goodssearch');
           })
-          .catch(error => {
+          .catch((error) => {
             message.error(error.message);
           });
       }
     });
   };
 
-  getRuleSetData = val => {
+  getRuleSetData = (val) => {
     this.setState({ ruleSetData: val });
   };
 
-  handleEditorChange = editorState => {
+  handleEditorChange = (editorState) => {
     this.setState({ editorState });
   };
 
-  getImageId = val => {
-    this.setState({ imgList: val.map(item => item.id) });
+  getImageId = (val) => {
+    this.setState({ imgList: val.map((item) => item.id) });
   };
 
-  handleChange = editorState => {
+  handleChange = (editorState) => {
     this.setState({ editorState });
   };
 
-  handleImageChange = val => {
+  handleImageChange = (val) => {
     this.setState({
       editorState: ContentUtils.insertMedias(this.state.editorState, [
         {
           type: 'IMAGE',
-          url: val
-        }
-      ])
+          url: val,
+        },
+      ]),
     });
   };
 
@@ -284,15 +308,15 @@ export default class App extends React.Component {
       'hr',
       'separator',
       'separator',
-      'clear'
+      'clear',
     ];
 
     const extendControls = [
       {
         key: 'antd-uploader',
         type: 'component',
-        component: <RictTextImages onChange={val => this.handleImageChange(val)}></RictTextImages>
-      }
+        component: <RictTextImages onChange={(val) => this.handleImageChange(val)}></RictTextImages>,
+      },
     ];
     return (
       <div className={styles.goodsEdit}>
@@ -303,19 +327,30 @@ export default class App extends React.Component {
           <FormItem label="商品名称">
             {getFieldDecorator('title', {
               initialValue: goodsData.title,
-              rules: [{ required: true, message: '请输入商品名称' }]
+              rules: [{ required: true, message: '请输入商品名称' }],
             })(<Input placeholder="请输入商品名称" />)}
           </FormItem>
           <FormItem
             label="商品卖点"
             help={
               <p>
-                在商品列表页，详情页标题下面展示卖点信息,建议60字以内 <a>查看示例</a>
+                在商品列表页，详情页标题下面展示卖点信息,建议60字以内{' '}
+                <Tooltip
+                  placement="bottom"
+                  title={
+                    <div style={{ width: 230, margin: '0 auto' }}>
+                      <img src={require('~images/sellpoint.jpg')} style={{ width: '100%' }}></img>
+                    </div>
+                  }
+                >
+                  <a>查看示例</a>
+                </Tooltip>
+                ,
               </p>
             }
           >
             {getFieldDecorator('sell_point', {
-              initialValue: goodsData.sell_point
+              initialValue: goodsData.sell_point,
             })(<Input />)}
           </FormItem>
           <Row style={{ margin: '24px 0' }}>
@@ -328,19 +363,19 @@ export default class App extends React.Component {
               <GetImageGroup
                 id={this.props.id}
                 imgList={goodsData.photo_info}
-                onChange={val => this.getImageId(val)}
+                onChange={(val) => this.getImageId(val)}
               ></GetImageGroup>
             </Col>
           </Row>
           <FormItem label="选择分组">
             {getFieldDecorator('tag_ids', {
-              initialValue: goodsData ? goodsData.tag_ids : []
+              initialValue: goodsData ? goodsData.tag_ids : [],
             })(<Cascader options={goodsSort} />)}
           </FormItem>
           <FormItem label="是否上架">
             {getFieldDecorator('is_display', {
               initialValue: goodsData.is_display ? goodsData.is_display : 1,
-              rules: [{ required: true, message: '请选择是否上架' }]
+              rules: [{ required: true, message: '请选择是否上架' }],
             })(
               <Select>
                 <Option value={1}>上架商品</Option>
@@ -351,18 +386,23 @@ export default class App extends React.Component {
           <FormItem label="划线价">
             {getFieldDecorator('origin_price', {
               initialValue: goodsData.origin_price,
-              rules: [{ required: true, message: '请填写划线价' }]
+              rules: [{ required: true, message: '请填写划线价' }],
             })(<Input type="text"></Input>)}
           </FormItem>
           <h2 className="title">
-            <span>价格库存</span>
+            <span>
+              价格库存
+              <span style={{ color: '#fc5050', fontSize: 14, fontWeight: 'normal', marginLeft: 5 }}>
+                (修改规格值与规格名后,请重新点击下方确定)
+              </span>
+            </span>
           </h2>
         </Form>
         <RuleSetEdit
           sku={kv_list}
           item_id={this.props.match.params.id}
           id={this.props.id}
-          onChange={val => this.getRuleSetData(val)}
+          onChange={(val) => this.getRuleSetData(val)}
         ></RuleSetEdit>
         <h2 className="title">
           <span>商品详情</span>

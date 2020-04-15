@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import styles from '~css/Goods/GoodsAdd/Real.module.less';
-import { Form, Input, Select, Upload, Icon, Modal, Button, Table, Row, Col, Cascader, Avatar, message } from 'antd';
+import { Form, Input, Select, Upload, Icon, Modal, Button, Table, Row, Col, Cascader, Avatar, message, Tooltip } from 'antd';
 import request from '~js/utils/request';
 import RuleSet from './RuleSet';
 import Picture from '../../Upload/Pictures';
@@ -100,7 +100,8 @@ class GetImageGroup extends React.Component {
             id={this.props.id}
             yztoken={this.props.yztoken}
             onChange={this.getImageUrl}
-            checkedID={this.state.checkedID}
+            checkedID={checkedID}
+            checkedData={imgData}
           ></Picture>
         </Modal>
       </div>
@@ -308,7 +309,17 @@ export default class App extends React.Component {
             label="商品卖点"
             help={
               <p>
-                在商品列表页，详情页标题下面展示卖点信息,建议60字以内 <a>查看示例</a>
+                在商品列表页，详情页标题下面展示卖点信息,建议60字以内{' '}
+                <Tooltip
+                  placement="bottom"
+                  title={
+                    <div style={{ width: 230, margin: '0 auto' }}>
+                      <img src={require('~images/sellpoint.jpg')} style={{ width: '100%' }}></img>
+                    </div>
+                  }
+                >
+                  <a>查看示例</a>
+                </Tooltip>
               </p>
             }
           >
@@ -349,7 +360,7 @@ export default class App extends React.Component {
           <h2 className="title">
             <span>
               价格库存
-              <span style={{ color: '#fc5050', fontSize: 14, fontWeight: 'normal' }}>
+              <span style={{ color: '#fc5050', fontSize: 14, fontWeight: 'normal', marginLeft: 5 }}>
                 (修改规格值与规格名后,请重新点击下方确定)
               </span>
             </span>

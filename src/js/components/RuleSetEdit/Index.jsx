@@ -17,7 +17,7 @@ class EditableCell extends React.Component {
   state = {
     editing: false,
     changeValue: '',
-    dataIndex: ''
+    dataIndex: '',
   };
 
   toggleEdit = () => {
@@ -29,7 +29,7 @@ class EditableCell extends React.Component {
     });
   };
 
-  save = e => {
+  save = (e) => {
     const { record, handleSave, dataIndex, title } = this.props;
     const { changeValue } = this.state;
     if (changeValue != '') {
@@ -41,7 +41,7 @@ class EditableCell extends React.Component {
     }
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ changeValue: e.target.value });
   };
 
@@ -52,7 +52,7 @@ class EditableCell extends React.Component {
       <Input
         type="number"
         onChange={this.handleChange}
-        ref={node => (this.input = node)}
+        ref={(node) => (this.input = node)}
         value={this.state.changeValue}
         onPressEnter={this.save}
         onBlur={this.save}
@@ -78,32 +78,32 @@ const baseColumns = [
     title: '价格',
     dataIndex: 'price',
     width: '15%',
-    editable: true
+    editable: true,
   },
   {
     title: '库存',
     width: '15%',
     dataIndex: 'quantity',
-    editable: true
-  }
+    editable: true,
+  },
 ];
 
 class DynamicFieldSet extends React.Component {
   state = {
     id: 0,
     mapKey: [],
-    skus: []
+    skus: [],
   };
 
   add = () => {
     this.setState({ mapKey: this.state.mapKey.concat({ id: this.state.id++, val: '' }) });
   };
 
-  remove = id => {
+  remove = (id) => {
     const { mapKey } = this.state;
 
     this.setState({
-      mapKey: mapKey.filter((item, index) => item.id != id)
+      mapKey: mapKey.filter((item) => item.id != id),
     });
   };
 
@@ -120,11 +120,11 @@ class DynamicFieldSet extends React.Component {
       <div className={styles.addRule} onChange={this.handleChange}>
         <label style={{ width: 80 }}>规格值:</label>
         <section className={styles.mapName}>
-          {mapKey.map((item, index) => (
-            <span key={index}>
-              {getFieldDecorator(`v${count}_${index}`, {
+          {mapKey.map((item) => (
+            <span key={item.id}>
+              {getFieldDecorator(`v${count}_${item.id}`, {
                 initialValue: item.val,
-                rules: [{ required: true, message: '请填写规格值' }]
+                rules: [{ required: true, message: '请填写规格值' }],
               })(<Input type="text" style={{ width: 120 }}></Input>)}
               {<Icon type="minus-circle" style={{ marginRight: 10 }} onClick={() => this.remove(item.id)} />}
             </span>
@@ -138,7 +138,7 @@ class DynamicFieldSet extends React.Component {
 
 class RulesSet extends React.Component {
   state = {
-    val: {}
+    val: {},
   };
 
   getData = () => {
@@ -147,7 +147,7 @@ class RulesSet extends React.Component {
         const { val } = this.state;
         const itemValue = this.props.form.getFieldsValue();
         this.setState({
-          val: itemValue
+          val: itemValue,
         });
       }
     });
@@ -184,7 +184,7 @@ export default class App extends React.Component {
     names: {},
     rKey: 0,
     skuData: [],
-    data: null
+    data: null,
   };
 
   add = () => {
@@ -198,19 +198,15 @@ export default class App extends React.Component {
       method: 'post',
       body: {
         id: this.props.id,
-        item_id: this.props.item_id
-      }
-    }).then(payload => {
-      this.setState(
-        {
-          ruleKey: payload.tmp_guige,
-          rKey: payload.tmp_guige.length,
-          data: payload.pageData.skulist
-        },
-        () => {
-          this.getTable();
-        }
-      );
+        item_id: this.props.item_id,
+      },
+    }).then((payload) => {
+      this.setState({
+        ruleKey: payload.tmp_guige,
+        rKey: payload.tmp_guige.length,
+        data: payload.pageData.skulist,
+      });
+      this.getTable();
     });
   }
 
@@ -223,8 +219,8 @@ export default class App extends React.Component {
         request('/api/t_goods_sku_create', {
           method: 'post',
           headers: { 'Content-Type': 'application/json;' },
-          body: { skulist: value, tmpskus: data ? data : [] }
-        }).then(payload => {
+          body: { skulist: value, tmpskus: data ? data : [] },
+        }).then((payload) => {
           this.setState({ data: payload.pageData, names: payload.key_list });
           onChange && onChange(payload.pageData);
         });
@@ -234,25 +230,25 @@ export default class App extends React.Component {
     });
   };
 
-  remove = k => {
+  remove = (k) => {
     const { ruleKey } = this.state;
 
     this.setState({ ruleKey: ruleKey.filter((key, index) => index != k) });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     this.getTable();
   };
 
-  handleSave = row => {
+  handleSave = (row) => {
     const { onChange } = this.props;
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => row.pric === item.pric);
+    const index = newData.findIndex((item) => row.pric === item.pric);
     const item = newData[index];
     newData.splice(index, 1, {
       ...item,
-      ...row
+      ...row,
     });
     this.setState({ data: newData });
     onChange && onChange(newData);
@@ -262,33 +258,33 @@ export default class App extends React.Component {
     const { ruleKey, names, data } = this.state;
 
     const outColumns = [
-      ...Object.keys(names).map(key => ({
+      ...Object.keys(names).map((key) => ({
         title: names[key],
-        dataIndex: key
+        dataIndex: key,
       })),
-      ...baseColumns
+      ...baseColumns,
     ];
 
     const components = {
       body: {
         row: EditableFormRow,
-        cell: EditableCell
-      }
+        cell: EditableCell,
+      },
     };
 
-    const columns = outColumns.map(col => {
+    const columns = outColumns.map((col) => {
       if (!col.editable) {
         return col;
       }
       return {
         ...col,
-        onCell: record => ({
+        onCell: (record) => ({
           record,
           editable: col.editable,
           dataIndex: col.dataIndex,
           title: col.title,
-          handleSave: this.handleSave
-        })
+          handleSave: this.handleSave,
+        }),
       };
     });
 

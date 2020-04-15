@@ -333,7 +333,6 @@ class GroupEdit extends React.Component {
     );
   }
 }
-let storeArr = [];
 
 export default class App extends React.Component {
   state = {
@@ -344,7 +343,6 @@ export default class App extends React.Component {
     total: null,
     pictures: [],
     current: 1,
-    checkedArr: [],
   };
 
   getGroup = () => {
@@ -362,10 +360,6 @@ export default class App extends React.Component {
       })
       .catch((error) => message.error(error.message));
   };
-
-  componentWillUnmount() {
-    storeArr = [];
-  }
 
   getPictures = (page, pageSize) => {
     request('/api/tmaterialcenter/list/select', {
@@ -410,16 +404,16 @@ export default class App extends React.Component {
   };
 
   handleChecked = (e) => {
-    const { onChange, checkedID } = this.props;
-    const { pictures } = this.state;
+    const { onChange } = this.props;
+    let newArr = this.props.checkedData;
 
     if (e.target.checked) {
-      storeArr.length < 15 ? storeArr.push(e.target.checkedValue) : message.error('请选择不超过15张图片');
+      newArr.length < 15 ? newArr.push(e.target.checkedValue) : message.error('请选择不超过15张图片');
     } else {
-      storeArr = storeArr.filter((item) => item.image_id != e.target.value);
+      newArr = newArr.filter((item) => item.image_id != e.target.value);
     }
 
-    onChange && onChange(storeArr);
+    onChange && onChange(newArr);
   };
 
   componentDidMount() {
