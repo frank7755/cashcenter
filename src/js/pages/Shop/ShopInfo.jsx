@@ -10,7 +10,7 @@ function getBase64(file) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 }
 
@@ -23,44 +23,44 @@ class PicturesWall extends React.Component {
         uid: '-1',
         name: 'image.png',
         status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       },
       {
         uid: '-2',
         name: 'image.png',
         status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       },
       {
         uid: '-3',
         name: 'image.png',
         status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       },
       {
         uid: '-4',
         name: 'image.png',
         status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       },
       {
         uid: '-5',
         name: 'image.png',
-        status: 'error'
-      }
-    ]
+        status: 'error',
+      },
+    ],
   };
 
   handleCancel = () => this.setState({ previewVisible: false });
 
-  handlePreview = async file => {
+  handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
 
     this.setState({
       previewImage: file.url || file.preview,
-      previewVisible: true
+      previewVisible: true,
     });
   };
 
@@ -98,7 +98,7 @@ class Address extends React.Component {
     province: [],
     city: [],
     area: [],
-    value: this.props.value ? this.props.value : { province: -1, city: -1, area: -1, address: '' }
+    value: this.props.value ? this.props.value : { province: -1, city: -1, area: -1, address: '' },
   };
 
   componentDidMount() {
@@ -116,7 +116,6 @@ class Address extends React.Component {
     const { value } = this.props;
 
     if (value) {
-      //   console.log(prevValue.province, value.province);
       (!prevValue || prevValue.province !== value.province) && this.getCity(value.province);
       (!prevValue || prevValue.city !== value.city) && this.getArea(value.city);
     }
@@ -125,31 +124,31 @@ class Address extends React.Component {
   getProvince = () => {
     request('/api/province', {
       method: 'post',
-      body: { id: this.props.id }
-    }).then(payload => {
+      body: { id: this.props.id },
+    }).then((payload) => {
       this.setState({ province: payload });
     });
   };
 
-  getCity = provinceCode => {
+  getCity = (provinceCode) => {
     provinceCode &&
       provinceCode != -1 &&
       request('/api/city', {
         method: 'post',
-        body: { provincecode: provinceCode }
-      }).then(payload => this.setState({ city: payload }));
+        body: { provincecode: provinceCode },
+      }).then((payload) => this.setState({ city: payload }));
   };
 
-  getArea = cityCode => {
+  getArea = (cityCode) => {
     cityCode &&
       cityCode != -1 &&
       request('/api/area', {
         method: 'post',
-        body: { citycode: cityCode }
-      }).then(payload => this.setState({ area: payload }));
+        body: { citycode: cityCode },
+      }).then((payload) => this.setState({ area: payload }));
   };
 
-  handleProvinceChange = province => {
+  handleProvinceChange = (province) => {
     const { value } = this.state;
     const nextValue = { ...value, province, city: -1, area: -1 };
 
@@ -158,7 +157,7 @@ class Address extends React.Component {
     province !== value.province && this.triggerChange(nextValue);
   };
 
-  handleCityChange = city => {
+  handleCityChange = (city) => {
     const { value } = this.state;
     const nextValue = { ...value, city, area: -1 };
 
@@ -167,7 +166,7 @@ class Address extends React.Component {
     city !== value.city && this.triggerChange(nextValue);
   };
 
-  handleAreaChange = area => {
+  handleAreaChange = (area) => {
     const { value } = this.state;
     const nextValue = { ...value, area };
 
@@ -175,7 +174,7 @@ class Address extends React.Component {
     area !== value.area && this.triggerChange(nextValue);
   };
 
-  handleaddress = e => {
+  handleaddress = (e) => {
     const { value } = this.state;
     const address = e.target.value;
 
@@ -183,7 +182,7 @@ class Address extends React.Component {
     this.triggerChange({ address });
   };
 
-  triggerChange = value => {
+  triggerChange = (value) => {
     const { onChange } = this.props;
 
     onChange && onChange(value);
@@ -198,7 +197,7 @@ class Address extends React.Component {
           <Select value={value.province} placeholder="省" onChange={this.handleProvinceChange}>
             <Option value={-1}>请选择</Option>
             {province &&
-              province.map(item => (
+              province.map((item) => (
                 <Option key={item.provincecode} value={item.provincecode}>
                   {item.name}
                 </Option>
@@ -207,7 +206,7 @@ class Address extends React.Component {
           <Select value={value.city} placeholder="市" onChange={this.handleCityChange}>
             <Option value={-1}>请选择</Option>
             {city &&
-              city.map(item => (
+              city.map((item) => (
                 <Option key={item.citycode} value={item.citycode}>
                   {item.name}
                 </Option>
@@ -216,7 +215,7 @@ class Address extends React.Component {
           <Select value={value.area} placeholder="区" onChange={this.handleAreaChange}>
             <Option value={-1}>请选择</Option>
             {area &&
-              area.map(item => (
+              area.map((item) => (
                 <Option key={item.code} value={item.code}>
                   {item.name}
                 </Option>
@@ -237,21 +236,21 @@ class ShopManage extends React.Component {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
-  handleAddOk = e => {
+  handleAddOk = (e) => {
+    console.log(this.props);
     this.props.form.validateFields((error, values) => {
       if (!error) {
         const { location, ...rest } = values;
-
         request('/api/create_shop', {
           method: 'post',
-          body: { ...rest, ...location, id: this.props.id }
-        }).then(payload => {
+          body: { ...rest, ...location, id: this.props.id },
+        }).then((payload) => {
           this.setState({
-            visible: false
+            visible: false,
           });
           this.props.refresh();
         });
@@ -259,7 +258,7 @@ class ShopManage extends React.Component {
     });
   };
 
-  handleEditOk = e => {
+  handleEditOk = (e) => {
     this.props.form.validateFields((error, values) => {
       console.log(values);
       if (!error) {
@@ -267,22 +266,22 @@ class ShopManage extends React.Component {
 
         request('/api/update_shop', {
           method: 'post',
-          body: { ...rest, ...location, id: this.props.id }
+          body: { ...rest, ...location, id: this.props.id },
         })
-          .then(payload => {
+          .then((payload) => {
             this.setState({
-              visible: false
+              visible: false,
             });
             this.props.refresh();
           })
-          .catch(err => message.error(err.message));
+          .catch((err) => message.error(err.message));
       }
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -313,13 +312,13 @@ class ShopManage extends React.Component {
             <Form.Item label="门店名称">
               {getFieldDecorator('shop_name', {
                 initialValue: data && data.shop_name,
-                rules: [{ required: true, message: '请输入门店名称!' }]
+                rules: [{ required: true, message: '请输入门店名称!' }],
               })(<Input placeholder="请输入门店名称" />)}
             </Form.Item>
             <Form.Item label="门店简称">
               {getFieldDecorator('shop_jc', {
                 initialValue: data && data.shop_jc,
-                rules: [{ required: true, message: '请输入门店简称!' }]
+                rules: [{ required: true, message: '请输入门店简称!' }],
               })(<Input placeholder="请输入门店简称" />)}
             </Form.Item>
             <Form.Item label="门店地址">
@@ -328,7 +327,7 @@ class ShopManage extends React.Component {
                   province: data.province_code,
                   city: data.city_code,
                   area: data.area_code,
-                  address: data.address
+                  address: data.address,
                 },
                 rules: [
                   {
@@ -345,9 +344,9 @@ class ShopManage extends React.Component {
                       } else {
                         callback();
                       }
-                    }
-                  }
-                ]
+                    },
+                  },
+                ],
               })(<Address id={id}></Address>)}
             </Form.Item>
           </Form>
@@ -360,7 +359,7 @@ class ShopManage extends React.Component {
 export default class App extends React.Component {
   state = {
     loading: false,
-    userInfo: null
+    userInfo: null,
   };
 
   componentDidMount() {
@@ -372,11 +371,11 @@ export default class App extends React.Component {
     request(`/api/select_shop`, {
       method: 'POST',
       body: {
-        id: this.props.id
-      }
+        id: this.props.id,
+      },
     })
-      .then(payload => this.setState({ userInfo: payload, loading: false }))
-      .catch(error => {
+      .then((payload) => this.setState({ userInfo: payload, loading: false }))
+      .catch((error) => {
         message.error(error.message);
         this.setState({ loading: false });
       });
