@@ -405,7 +405,7 @@ export default class App extends React.Component {
 
   handleChecked = (e) => {
     const { onChange } = this.props;
-    let newArr = this.props.checkedData;
+    let newArr = [...this.props.checkedData];
 
     if (e.target.checked) {
       newArr.length < 15 ? newArr.push(e.target.checkedValue) : message.error('请选择不超过15张图片');

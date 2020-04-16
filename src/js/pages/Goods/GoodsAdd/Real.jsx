@@ -23,7 +23,7 @@ const formItemLayout = {
 };
 
 class GetImageGroup extends React.Component {
-  state = { visible: false, imgData: [], checkedID: [] };
+  state = { visible: false, imgData: [], checkedID: [], urlList: [] };
 
   showModal = () => {
     this.setState({
@@ -49,30 +49,31 @@ class GetImageGroup extends React.Component {
 
     const { imgData } = this.state;
 
-    this.setState({ visible: false });
+    this.setState({ visible: false, urlList: imgData });
 
     onChange && onChange(imgData);
   };
 
   handleRemove = (k) => {
-    const { imgData, checkedID } = this.state;
+    const { urlList, checkedID, imgData } = this.state;
 
     this.setState({
       imgData: imgData.filter((item) => item.image_id != k),
+      urlList: urlList.filter((item) => item.image_id != k),
       checkedID: checkedID.filter((item) => item != k),
     });
   };
 
   render() {
-    const { visible, imgData, checkedID } = this.state;
+    const { visible, urlList, checkedID, imgData } = this.state;
 
     return (
       <div>
         <Button onClick={this.showModal}>选择商品图</Button>
         <p style={{ color: '#999', marginTop: 5, marginBottom: 12 }}>最多选择15张图片</p>
         <div className={styles.imgList}>
-          {imgData.length > 0 &&
-            imgData.map((item) => (
+          {urlList.length > 0 &&
+            urlList.map((item) => (
               <span
                 style={{ position: 'relative', display: 'inline-block', marginRight: 24, marginBottom: 12, marginBottom: 12 }}
                 key={item.image_id}

@@ -5,94 +5,6 @@ import { Upload, Icon, Modal, Empty, Button, Form, message, Select, Input, Spin 
 
 const { Option } = Select;
 
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
-
-class PicturesWall extends React.Component {
-  state = {
-    previewVisible: false,
-    previewImage: '',
-    fileList: [
-      {
-        uid: '-1',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        uid: '-2',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        uid: '-3',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        uid: '-4',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        uid: '-5',
-        name: 'image.png',
-        status: 'error',
-      },
-    ],
-  };
-
-  handleCancel = () => this.setState({ previewVisible: false });
-
-  handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-
-    this.setState({
-      previewImage: file.url || file.preview,
-      previewVisible: true,
-    });
-  };
-
-  handleChange = ({ fileList }) => this.setState({ fileList });
-
-  render() {
-    const { previewVisible, previewImage, fileList } = this.state;
-    const uploadButton = (
-      <div>
-        <Icon type="plus" />
-        <div className="ant-upload-text">上传图片</div>
-      </div>
-    );
-    return (
-      <div className={`${styles.upload} clearfix`}>
-        <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="picture-card"
-          fileList={fileList}
-          onPreview={this.handlePreview}
-          onChange={this.handleChange}
-        >
-          {fileList.length >= 8 ? null : uploadButton}
-        </Upload>
-        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-          <img alt="example" style={{ width: '100%' }} src={previewImage} />
-        </Modal>
-      </div>
-    );
-  }
-}
-
 class Address extends React.Component {
   state = {
     province: [],
@@ -105,19 +17,11 @@ class Address extends React.Component {
     this.getProvince();
 
     const { value } = this.props;
+    this.triggerChange(value);
 
     if (value) {
       this.getCity(value.province);
       this.getArea(value.city);
-    }
-  }
-
-  componentDidUpdate({ value: prevValue }) {
-    const { value } = this.props;
-
-    if (value) {
-      (!prevValue || prevValue.province !== value.province) && this.getCity(value.province);
-      (!prevValue || prevValue.city !== value.city) && this.getArea(value.city);
     }
   }
 
@@ -177,9 +81,10 @@ class Address extends React.Component {
   handleaddress = (e) => {
     const { value } = this.state;
     const address = e.target.value;
+    const nextValue = { ...value, address };
 
     this.setState({ value: { ...value, address } });
-    this.triggerChange({ address });
+    this.triggerChange(nextValue);
   };
 
   triggerChange = (value) => {
@@ -241,7 +146,6 @@ class ShopManage extends React.Component {
   };
 
   handleAddOk = (e) => {
-    console.log(this.props);
     this.props.form.validateFields((error, values) => {
       if (!error) {
         const { location, ...rest } = values;
@@ -260,7 +164,6 @@ class ShopManage extends React.Component {
 
   handleEditOk = (e) => {
     this.props.form.validateFields((error, values) => {
-      console.log(values);
       if (!error) {
         const { location, ...rest } = values;
 
@@ -335,9 +238,9 @@ class ShopManage extends React.Component {
                     validator: (_rule, value, callback) => {
                       if (
                         value == null ||
-                        value.province == null ||
-                        value.city == null ||
-                        value.area == null ||
+                        value.province == -1 ||
+                        value.city == -1 ||
+                        value.area == -1 ||
                         value.address == null
                       ) {
                         callback('请输入完整地址！');
@@ -397,10 +300,6 @@ export default class App extends React.Component {
               <li>门店名称：{userInfo.shop_name}</li>
               <li>门店简称：{userInfo.shop_jc}</li>
               <li className={styles.full}>门店地址：{userInfo.address}</li>
-              <li className={styles.full}>
-                门店logo：<PicturesWall></PicturesWall>
-                <p></p>
-              </li>
             </ul>
           </Spin>
         ) : (

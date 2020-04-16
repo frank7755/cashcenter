@@ -13,7 +13,7 @@ const InputGroup = Input.Group;
 @Form.create()
 class GoodsAction extends React.PureComponent {
   state = {
-    visible: false
+    visible: false,
   };
 
   static expando = 0;
@@ -26,7 +26,7 @@ class GoodsAction extends React.PureComponent {
     this.setState({ visible: false });
   };
 
-  handleAddSubmit = e => {
+  handleAddSubmit = (e) => {
     const { refresh, form } = this.props;
 
     form.validateFields((err, values) => {
@@ -34,8 +34,8 @@ class GoodsAction extends React.PureComponent {
         this.setState({ visible: false });
         request('/api/insert_goods', {
           method: 'post',
-          body: { ...values, id: this.props.id, user_name: this.props.user_name, user_id: this.props.user_id, status: 0 }
-        }).then(payload => {
+          body: { ...values, id: this.props.id, user_name: this.props.user_name, user_id: this.props.user_id, status: 0 },
+        }).then((payload) => {
           message.success('添加成功！');
           form.resetFields();
           refresh();
@@ -74,7 +74,7 @@ class GoodsAction extends React.PureComponent {
               <FormItem label="商品名称">
                 {getFieldDecorator('name', {
                   initialValue: data && data.name,
-                  rules: [{ required: true, message: '请输入商品名称' }]
+                  rules: [{ required: true, message: '请输入商品名称' }],
                 })(<Input placeholder="请输入商品名称" />)}
               </FormItem>
             </section>
@@ -85,9 +85,9 @@ class GoodsAction extends React.PureComponent {
                   rules: [{ required: true, message: '请输入库存量' }],
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入库存量',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入库存量" />)}
               </FormItem>
             </section>
@@ -98,9 +98,9 @@ class GoodsAction extends React.PureComponent {
                   rules: [{ required: true, message: '请输入销售价格' }],
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入销售价格',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入销售价格" />)}
               </FormItem>
             </section>
@@ -111,9 +111,9 @@ class GoodsAction extends React.PureComponent {
                   rules: [{ required: true, message: '请输入库存下线' }],
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入库存下线',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入库存下线" />)}
               </FormItem>
             </section>
@@ -121,7 +121,7 @@ class GoodsAction extends React.PureComponent {
               <FormItem label="商品单位">
                 {getFieldDecorator('unit', {
                   initialValue: data && data.unit,
-                  rules: [{ required: true, message: '请输入商品单位' }]
+                  rules: [{ required: true, message: '请输入商品单位' }],
                 })(<Input placeholder="请输入商品单位" />)}
               </FormItem>
             </section>
@@ -131,58 +131,58 @@ class GoodsAction extends React.PureComponent {
                   initialValue: data && data.code_id,
                   pattern: new RegExp(/^[1-9]\d*$/, 'g'),
                   message: '请输入货单编号',
-                  getValueFromEvent: event => {
+                  getValueFromEvent: (event) => {
                     return event.target.value.replace(/\D/g, '');
-                  }
+                  },
                 })(<Input placeholder="请输入货单编号" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="供应商条码">
                 {getFieldDecorator('s_code', {
-                  initialValue: data && data.s_code
+                  initialValue: data && data.s_code,
                 })(<Input placeholder="请输入供应商条码" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="自定义条码">
                 {getFieldDecorator('u_code', {
-                  initialValue: data && data.u_code
+                  initialValue: data && data.u_code,
                 })(<Input placeholder="请输入自定义条码" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品链接">
                 {getFieldDecorator('s_link', {
-                  initialValue: data && data.s_link
+                  initialValue: data && data.s_link,
                 })(<Input placeholder="请输入商品链接" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品图片">
                 {getFieldDecorator('s_photo', {
-                  initialValue: data && data.s_photo
+                  initialValue: data && data.s_photo,
                 })(<Input placeholder="请输入图片地址" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品分类">
                 {getFieldDecorator('type_id', {
-                  initialValue: data && data.type_id
+                  initialValue: data && data.type_id,
                 })(<Input placeholder="请输入商品分类" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="商品品类">
                 {getFieldDecorator('unit_pinlei', {
-                  initialValue: data && data.unit_pinlei
+                  initialValue: data && data.unit_pinlei,
                 })(<Input placeholder="请输入商品品类" />)}
               </FormItem>
             </section>
             <section>
               <FormItem label="阈值提醒">
                 {getFieldDecorator('threshold_remind', {
-                  initialValue: data && data.threshold_remind
+                  initialValue: data && data.threshold_remind,
                 })(<Input placeholder="请输入阈值" />)}
               </FormItem>
             </section>
@@ -196,12 +196,12 @@ class GoodsAction extends React.PureComponent {
                 textAlign: 'right',
                 left: 0,
                 background: '#fff',
-                borderRadius: '0 0 4px 4px'
+                borderRadius: '0 0 4px 4px',
               }}
             >
               <Button
                 style={{
-                  marginRight: 8
+                  marginRight: 8,
                 }}
                 onClick={this.closeDrawer}
               >
@@ -224,17 +224,17 @@ class GoodsTable extends React.Component {
     {
       title: '商品名称',
       dataIndex: 'name',
-      width: 200
+      width: 200,
     },
     {
       title: '商品单位',
       dataIndex: 'unit',
-      width: 200
+      width: 200,
     },
     {
       title: '库存量',
       dataIndex: 'inventory_quantity',
-      width: 200
+      width: 200,
     },
     {
       title: '销售价格',
@@ -242,7 +242,7 @@ class GoodsTable extends React.Component {
       width: 200,
       render(seling_price) {
         return '￥' + formatThousands(seling_price);
-      }
+      },
     },
     {
       title: '状态',
@@ -250,7 +250,7 @@ class GoodsTable extends React.Component {
       width: 200,
       render(status) {
         return status == '0' ? <span style={{ color: '#31c105' }}>生效</span> : <span style={{ color: '#fc5050' }}>无效</span>;
-      }
+      },
     },
     {
       title: '操作',
@@ -265,11 +265,11 @@ class GoodsTable extends React.Component {
             user_id={this.props.user_id}
           ></GoodsAction>
         );
-      }
-    }
+      },
+    },
   ];
 
-  expandedRowRender = record => {
+  expandedRowRender = (record) => {
     return (
       <Fragment>
         <p>货单编号：{record.code_id}</p>
@@ -342,7 +342,7 @@ class GoodsTable extends React.Component {
                           <Input
                             style={{
                               width: 'calc(50% - 25px)',
-                              textAlign: 'center'
+                              textAlign: 'center',
                             }}
                             placeholder="最小金额"
                           />
@@ -352,7 +352,7 @@ class GoodsTable extends React.Component {
                             width: 50,
                             borderLeft: 0,
                             pointerEvents: 'none',
-                            backgroundColor: '#fff'
+                            backgroundColor: '#fff',
                           }}
                           placeholder="~"
                           disabled
@@ -362,7 +362,7 @@ class GoodsTable extends React.Component {
                             style={{
                               width: 'calc(50% - 25px)',
                               textAlign: 'center',
-                              borderLeft: 0
+                              borderLeft: 0,
                             }}
                             placeholder="最大金额"
                           />
@@ -404,9 +404,6 @@ class GoodsTable extends React.Component {
 }
 
 export default class App extends React.Component {
-  componentDidMount() {
-    console.log(this.props.user_id);
-  }
   render() {
     return (
       <div className={styles.goodManage}>

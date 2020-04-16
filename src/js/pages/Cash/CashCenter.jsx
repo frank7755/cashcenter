@@ -84,8 +84,6 @@ class SingleDiscount extends React.Component {
               ? (Number(userSettingDiscount) * values.price_num).toFixed(2)
               : (values.price_num * values.Discount_type).toFixed(2),
         };
-        console.log(Number(userSettingDiscount) * values.price_num);
-
         onChange && onChange(newData);
       }
     });

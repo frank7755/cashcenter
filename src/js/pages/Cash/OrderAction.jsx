@@ -391,7 +391,6 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.getData();
-    console.log(this.props.yztoken);
   }
 
   getData = () => {

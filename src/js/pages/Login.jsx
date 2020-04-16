@@ -11,7 +11,7 @@ class RegisterForm extends React.Component {
   state = {
     url: null,
     count: 90,
-    disabled: false
+    disabled: false,
   };
 
   componentDidMount() {
@@ -20,11 +20,11 @@ class RegisterForm extends React.Component {
 
   handleCaptcha = () => {
     request('/api/testGetCaptcha')
-      .then(payload => this.setState({ url: payload.url }))
-      .catch(error => message.error(error.message));
+      .then((payload) => this.setState({ url: payload.url }))
+      .catch((error) => message.error(error.message));
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.props.form.validateFields((err, values) => {
@@ -32,14 +32,14 @@ class RegisterForm extends React.Component {
         request('/api/login/create', {
           method: 'POST',
           body: values,
-          notify: true
+          notify: true,
         })
-          .then(payload => {
+          .then((payload) => {
             const { history } = this.props;
 
             history.push('/login');
           })
-          .catch(error => message.error(error.message));
+          .catch((error) => message.error(error.message));
       }
     });
   };
@@ -50,11 +50,11 @@ class RegisterForm extends React.Component {
         method: 'post',
         body: {
           telnumber: this.props.form.getFieldValue('telnumber'),
-          type: 1
-        }
+          type: 1,
+        },
       })
-        .then(payload => (this.timerID = setInterval(() => this.tick(), 1000)))
-        .catch(error => message.error(error.message));
+        .then((payload) => (this.timerID = setInterval(() => this.tick(), 1000)))
+        .catch((error) => message.error(error.message));
     } else {
       message.error('请输入手机号码');
     }
@@ -84,9 +84,9 @@ class RegisterForm extends React.Component {
                 { required: true, message: '请输入手机号' },
                 {
                   pattern: /^1[3456789]\d{9}$/,
-                  message: '请输入正确的手机号'
-                }
-              ]
+                  message: '请输入正确的手机号',
+                },
+              ],
             })(
               <Input
                 maxLength={11}
@@ -97,7 +97,7 @@ class RegisterForm extends React.Component {
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('pwd', {
-              rules: [{ required: true, message: '请输入密码' }]
+              rules: [{ required: true, message: '请输入密码' }],
             })(
               <Input
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -109,7 +109,7 @@ class RegisterForm extends React.Component {
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('user_name', {
-              rules: [{ required: true, message: '请输入姓名' }]
+              rules: [{ required: true, message: '请输入姓名' }],
             })(
               <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} type="text" placeholder="请输入姓名" />
             )}
@@ -117,7 +117,7 @@ class RegisterForm extends React.Component {
           <Form.Item>
             <div className={styles.message}>
               {getFieldDecorator('code', {
-                rules: [{ required: true, message: '请输入短信验证码' }]
+                rules: [{ required: true, message: '请输入短信验证码' }],
               })(
                 <Input
                   className={styles.captchaInput}
@@ -127,7 +127,7 @@ class RegisterForm extends React.Component {
                 />
               )}
               <Button type="primary" onClick={this.handleMessage} disabled={this.state.disabled}>
-                {count == 60 ? '发送验证码' : `(${count}s)后重试`}
+                {count == 90 ? '发送验证码' : `(${count}s)后重试`}
               </Button>
             </div>
           </Form.Item>
@@ -174,10 +174,10 @@ const tel = 'telnumber';
 export default class App extends React.Component {
   state = {
     account: store.get(storeAccount),
-    remember: store.get(storeAccountState) != 0
+    remember: store.get(storeAccountState) != 0,
   };
 
-  handleRemember = e => {
+  handleRemember = (e) => {
     const { checked } = e.target;
 
     if (!checked) {
@@ -188,7 +188,7 @@ export default class App extends React.Component {
     store.set(storeAccountState, checked ? 1 : 0);
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.props.form.validateFields((err, values) => {
@@ -202,9 +202,9 @@ export default class App extends React.Component {
 
         request('/api/login_user', {
           method: 'POST',
-          body: values
+          body: values,
         })
-          .then(payload => {
+          .then((payload) => {
             const { history } = this.props;
 
             history.push('/');
@@ -214,9 +214,8 @@ export default class App extends React.Component {
             store.set(userId, payload.id);
             store.set(tel, payload.telnumber);
             store.set(name, payload.user_name);
-            console.log(store.get(tel));
           })
-          .catch(error => message.error(error.message));
+          .catch((error) => message.error(error.message));
       }
     });
   };
@@ -237,9 +236,6 @@ export default class App extends React.Component {
 
     return null;
   }
-  componentDidMount() {
-    console.log(this.props.yztoken);
-  }
 
   render() {
     const { type } = this.props.match.params;
@@ -258,13 +254,13 @@ export default class App extends React.Component {
                   rules: [
                     {
                       required: true,
-                      message: '请输入手机号'
+                      message: '请输入手机号',
                     },
                     {
                       pattern: /^1[3456789]\d{9}$/,
-                      message: '请输入正确的手机号'
-                    }
-                  ]
+                      message: '请输入正确的手机号',
+                    },
+                  ],
                 })(
                   <Input
                     maxLength={11}
@@ -275,7 +271,7 @@ export default class App extends React.Component {
               </Form.Item>
               <Form.Item>
                 {getFieldDecorator('pwd', {
-                  rules: [{ required: true, message: '请输入密码' }]
+                  rules: [{ required: true, message: '请输入密码' }],
                 })(
                   <Input
                     prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -288,7 +284,7 @@ export default class App extends React.Component {
               <Form.Item>
                 {getFieldDecorator('remember', {
                   valuePropName: 'checked',
-                  initialValue: this.state.remember
+                  initialValue: this.state.remember,
                 })(<Checkbox onChange={this.handleRemember}>记住密码</Checkbox>)}
                 <Link className={styles.loginForgot} to="/forget">
                   忘记密码

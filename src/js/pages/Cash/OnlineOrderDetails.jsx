@@ -212,7 +212,6 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.refresh();
-    console.log(this.props.yztoken);
   }
 
   render() {
