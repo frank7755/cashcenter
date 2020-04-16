@@ -6,108 +6,108 @@ import loadable from '~js/utils/loadable';
 export default {
   // 逻辑页
   '/': {
-    component: loadable(() => import('~js/pages/Home.jsx'))
+    component: loadable(() => import('~js/pages/Home.jsx')),
   },
   '/:type(login|register)': {
     layout: false,
-    component: loadable(() => import('~js/pages/Login.jsx'))
+    component: loadable(() => import('~js/pages/Login.jsx')),
   },
   '/forget': {
     layout: false,
-    component: loadable(() => import('~js/pages/Forget.jsx'))
+    component: loadable(() => import('~js/pages/Forget.jsx')),
   },
-  '/shopinfo': {
-    component: loadable(() => import('~js/pages/Shop/ShopInfo.jsx'))
-  },
+  // '/shopinfo': {
+  //   component: loadable(() => import('~js/pages/Shop/ShopInfo.jsx'))
+  // },
   '/staffmanage': {
-    component: loadable(() => import('~js/pages/Shop/StaffManage.jsx'))
+    component: loadable(() => import('~js/pages/Shop/StaffManage.jsx')),
   },
   '/bindbank': {
-    component: loadable(() => import('~js/pages/Shop/BindBank.jsx'))
+    component: loadable(() => import('~js/pages/Shop/BindBank.jsx')),
   },
   '/goodsadd': {
-    component: loadable(() => import('~js/pages/Goods/GoodsAdd/Index.jsx'))
+    component: loadable(() => import('~js/pages/Goods/GoodsAdd/Index.jsx')),
   },
   // '/ruleset': {
   //   component: loadable(() => import('~js/pages/Goods/GoodsAdd/RuleSet.jsx'))
   // },
   '/goodsedit/:id': {
-    component: loadable(() => import('~js/pages/Goods/GoodsEdit.jsx')) //商品编辑
+    component: loadable(() => import('~js/pages/Goods/GoodsEdit.jsx')), //商品编辑
   },
   '/goodssearch': {
-    component: loadable(() => import('~js/pages/Goods/GoodsSearch.jsx')) //商品查询
+    component: loadable(() => import('~js/pages/Goods/GoodsSearch.jsx')), //商品查询
   },
   // '/goodscategories': {
   //   component: loadable(() => import('~js/pages/Goods/GoodsCategories.jsx')) //商品分类
   // },
   '/ordermanage': {
-    component: loadable(() => import('~js/pages/Purchase/OrderManage.jsx'))
+    component: loadable(() => import('~js/pages/Purchase/OrderManage.jsx')),
   },
   '/ordermanage/:id': {
-    component: loadable(() => import('~js/pages/Purchase/OrderDetails.jsx'))
+    component: loadable(() => import('~js/pages/Purchase/OrderDetails.jsx')),
   },
   '/supplier': {
-    component: loadable(() => import('~js/pages/Purchase/Supplier.jsx'))
+    component: loadable(() => import('~js/pages/Purchase/Supplier.jsx')),
   },
   '/ordertopay': {
-    component: loadable(() => import('~js/pages/Purchase/OrderToPay.jsx'))
+    component: loadable(() => import('~js/pages/Purchase/OrderToPay.jsx')),
   },
   '/vipmanage': {
-    component: loadable(() => import('~js/pages/Vip/VipManage.jsx')) //会员管理
+    component: loadable(() => import('~js/pages/Vip/VipManage.jsx')), //会员管理
   },
   '/cashcenter': {
-    component: loadable(() => import('~js/pages/Cash/CashCenter.jsx')) //收银中心
+    component: loadable(() => import('~js/pages/Cash/CashCenter.jsx')), //收银中心
   },
   '/sellsearch': {
-    component: loadable(() => import('~js/pages/Cash/SellSearch.jsx')) //销售查询
+    component: loadable(() => import('~js/pages/Cash/SellSearch.jsx')), //销售查询
   },
   '/onlineorder': {
-    component: loadable(() => import('~js/pages/Cash/OnlineOrder.jsx')) //线上订单查询
+    component: loadable(() => import('~js/pages/Cash/OnlineOrder.jsx')), //线上订单查询
   },
   '/confirmticket': {
-    component: loadable(() => import('~js/pages/Cash/ConfirmTicket.jsx'))
+    component: loadable(() => import('~js/pages/Cash/ConfirmTicket.jsx')),
   },
   '/onlineorder/:id': {
-    component: loadable(() => import('~js/pages/Cash/OnlineOrderDetails.jsx'))  //订单详情查看
+    component: loadable(() => import('~js/pages/Cash/OnlineOrderDetails.jsx')), //订单详情查看
   },
   '/onlineorder/action/:id': {
-    component: loadable(() => import('~js/pages/Cash/OrderAction.jsx'))  //订单维权查看
+    component: loadable(() => import('~js/pages/Cash/OrderAction.jsx')), //订单维权查看
   },
   '/sourcecenter': {
-    component: loadable(() => import('~js/pages/Upload/Index.jsx')) //素材中心
+    component: loadable(() => import('~js/pages/Upload/Index.jsx')), //素材中心
   },
   '/propertydetails': {
-    component: loadable(() => import('~js/pages/Property/PropertyDetails.jsx'))
+    component: loadable(() => import('~js/pages/Property/PropertyDetails.jsx')),
   },
   '/withdrawrecord': {
-    component: loadable(() => import('~js/pages/Property/WithdrawRecord.jsx'))
+    component: loadable(() => import('~js/pages/Property/WithdrawRecord.jsx')),
   },
   '/selldata': {
-    component: loadable(() => import('~js/pages/Data/SellData.jsx'))
+    component: loadable(() => import('~js/pages/Data/SellData.jsx')),
   },
   '/sellrank': {
-    component: loadable(() => import('~js/pages/Data/SellRank.jsx'))
+    component: loadable(() => import('~js/pages/Data/SellRank.jsx')),
   },
   '/sellanalysis': {
-    component: loadable(() => import('~js/pages/Data/SellAnalysis.jsx'))
+    component: loadable(() => import('~js/pages/Data/SellAnalysis.jsx')),
   },
   '/singlegoods': {
-    component: loadable(() => import('~js/pages/Data/SingleGoods.jsx'))
+    component: loadable(() => import('~js/pages/Data/SingleGoods.jsx')),
   },
   '/guiderecord': {
-    component: loadable(() => import('~js/pages/Data/GuideRecord.jsx'))
+    component: loadable(() => import('~js/pages/Data/GuideRecord.jsx')),
   },
   // 错误页
   '/403': {
     layout: false,
-    component: loadable(() => import('~js/pages/403.jsx'))
+    component: loadable(() => import('~js/pages/403.jsx')),
   },
   '/404': {
     layout: false,
-    component: loadable(() => import('~js/pages/404.jsx'))
+    component: loadable(() => import('~js/pages/404.jsx')),
   },
   '/500': {
     layout: false,
-    component: loadable(() => import('~js/pages/500.jsx'))
-  }
+    component: loadable(() => import('~js/pages/500.jsx')),
+  },
 };

@@ -342,6 +342,16 @@ export default class App extends React.Component {
               rules: [{ required: true, message: '请选择商品分组' }],
             })(<Cascader options={goodsSort} />)}
           </FormItem>
+          <FormItem label="商品编码">
+            {getFieldDecorator('code_id', {
+              rules: [{ required: true, message: '请填写商品编码' }],
+            })(<Input type="text"></Input>)}
+          </FormItem>
+          <FormItem label="划线价">
+            {getFieldDecorator('origin_price', {
+              rules: [{ required: true, message: '请填写划线价' }],
+            })(<Input type="text"></Input>)}
+          </FormItem>
           <FormItem label="是否上架">
             {getFieldDecorator('is_display', {
               initialValue: 1,
@@ -352,11 +362,6 @@ export default class App extends React.Component {
                 <Option value={0}>放入仓库</Option>
               </Select>
             )}
-          </FormItem>
-          <FormItem label="划线价">
-            {getFieldDecorator('origin_price', {
-              rules: [{ required: true, message: '请填写划线价' }],
-            })(<Input type="text"></Input>)}
           </FormItem>
           <h2 className="title">
             <span>

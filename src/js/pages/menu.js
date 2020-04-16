@@ -118,11 +118,11 @@ export default [
     key: 1,
     title: '门店',
     children: [
-      {
-        key: 101,
-        title: '门店信息',
-        src: '/shopinfo'
-      },
+      // {
+      //   key: 101,
+      //   title: '门店信息',
+      //   src: '/shopinfo'
+      // },
       {
         key: 102,
         title: '店员管理',
