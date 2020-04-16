@@ -74,6 +74,12 @@ class EditableCell extends React.Component {
 
 const baseColumns = [
   {
+    title: '商品编码',
+    dataIndex: 'item_no',
+    width: '15%',
+    editable: true,
+  },
+  {
     title: '价格',
     dataIndex: 'price',
     width: '15%',
@@ -81,7 +87,7 @@ const baseColumns = [
   },
   {
     title: '库存',
-    width: '15%',
+    width: '8%',
     dataIndex: 'quantity',
     editable: true,
   },

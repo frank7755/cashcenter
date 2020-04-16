@@ -366,6 +366,7 @@ export default class App extends React.Component {
               <GetImageGroup
                 id={this.props.id}
                 imgList={goodsData.photo_info}
+                yztoken={this.props.yztoken}
                 onChange={(val) => this.getImageId(val)}
               ></GetImageGroup>
             </Col>
@@ -374,11 +375,6 @@ export default class App extends React.Component {
             {getFieldDecorator('tag_ids', {
               initialValue: goodsData ? goodsData.tag_ids : [],
             })(<Cascader options={goodsSort} />)}
-          </FormItem>
-          <FormItem label="商品编码">
-            {getFieldDecorator('code_id', {
-              rules: [{ required: true, message: '请填写商品编码' }],
-            })(<Input type="text"></Input>)}
           </FormItem>
           <FormItem label="划线价">
             {getFieldDecorator('origin_price', {
