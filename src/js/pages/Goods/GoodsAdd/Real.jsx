@@ -56,12 +56,15 @@ class GetImageGroup extends React.Component {
 
   handleRemove = (k) => {
     const { urlList, checkedID, imgData } = this.state;
+    const { onChange } = this.props;
+    const newImageData = imgData.filter((item) => item.image_id != k);
 
     this.setState({
       imgData: imgData.filter((item) => item.image_id != k),
       urlList: urlList.filter((item) => item.image_id != k),
       checkedID: checkedID.filter((item) => item != k),
     });
+    onChange && onChange(newImageData);
   };
 
   render() {

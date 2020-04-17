@@ -66,12 +66,16 @@ class GetImageGroup extends React.Component {
 
   handleRemove = (k) => {
     const { urlList, checkedID, imgData } = this.state;
+    const { onChange } = this.props;
+    const newImageData = imgData.filter((item) => item.image_id != k);
 
     this.setState({
       imgData: imgData.filter((item) => item.image_id != k),
       urlList: urlList.filter((item) => item.image_id != k),
       checkedID: checkedID.filter((item) => item != k),
     });
+
+    onChange && onChange(newImageData);
   };
   render() {
     const { visible, urlList, checkedID, imgData } = this.state;
@@ -190,8 +194,8 @@ export default class App extends React.Component {
     checkedValue: [],
     imgList: [],
     goodsData: [],
-    origin_imgList: [],
     item_id: '',
+    imgIds: '',
   };
 
   componentDidMount() {
@@ -208,16 +212,16 @@ export default class App extends React.Component {
     }).then((payload) => {
       this.setState({
         goodsData: payload.pageData,
+        imgList: payload.pageData.photo_info,
         editorState: BraftEditor.createEditorState(payload.pageData.desc),
         kv_list: payload.kv_list,
-        origin_imgList: payload.pageData.photo_info,
         item_id: payload.pageData.item_id,
       });
     });
   }
 
   handleSubmit = () => {
-    const { ruleSetData, imgList, editorState, origin_imgList, item_id } = this.state;
+    const { ruleSetData, imgList, editorState, item_id, imgIds } = this.state;
 
     this.props.form.validateFields((err, value) => {
       if (!err) {
@@ -231,8 +235,8 @@ export default class App extends React.Component {
             item_id: item_id,
             status: 0,
             item_type: 0,
-            image_ids: imgList.length > 0 ? imgList.join(',') : origin_imgList.map((item) => item.image_id).join(','),
-            tag_ids: value.tag_ids[2],
+            image_ids: imgIds.join(','),
+            tag_ids: value.tag_ids[1],
             sku_stocks: ruleSetData,
             desc: editorState.toHTML(),
           },
@@ -257,7 +261,7 @@ export default class App extends React.Component {
   };
 
   getImageId = (val) => {
-    this.setState({ imgList: val.map((item) => item.id) });
+    this.setState({ imgIds: val.map((item) => item.image_id) });
   };
 
   handleChange = (editorState) => {
@@ -277,7 +281,7 @@ export default class App extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { editorState, goodsSort, goodsData, kv_list } = this.state;
+    const { editorState, goodsSort, goodsData, kv_list, imgList } = this.state;
     const controls = [
       'undo',
       'redo',
@@ -321,6 +325,7 @@ export default class App extends React.Component {
         component: <RictTextImages onChange={(val) => this.handleImageChange(val)}></RictTextImages>,
       },
     ];
+
     return (
       <div className={styles.goodsEdit}>
         <Form {...formItemLayout} className={styles.realFrom}>
@@ -365,15 +370,15 @@ export default class App extends React.Component {
             <Col span={10}>
               <GetImageGroup
                 id={this.props.id}
-                imgList={goodsData.photo_info}
+                imgList={imgList}
                 yztoken={this.props.yztoken}
-                onChange={(val) => this.getImageId(val)}
+                onChange={this.getImageId}
               ></GetImageGroup>
             </Col>
           </Row>
           <FormItem label="选择分组">
             {getFieldDecorator('tag_ids', {
-              initialValue: goodsData ? goodsData.tag_ids : [],
+              initialValue: goodsData.tag_ids ? goodsData.tag_ids : [],
             })(<Cascader options={goodsSort} />)}
           </FormItem>
           <FormItem label="划线价">

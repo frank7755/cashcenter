@@ -336,7 +336,11 @@ export default class App extends React.Component {
   };
 
   handleBatch = (val) => {
+    const { onChange } = this.props;
+
     this.setState({ data: val });
+
+    onChange && onChange(val);
   };
 
   render() {

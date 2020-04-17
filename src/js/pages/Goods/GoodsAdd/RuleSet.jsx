@@ -290,7 +290,7 @@ export default class App extends React.Component {
         }).then((payload) => {
           this.setState({ data: payload.pageData, names: payload.key_list });
 
-          onChange && onChange(payload.pageData);
+          onChange && onChange(data);
         });
       } else {
         message.error('请填写规格与规格值!');
@@ -312,7 +312,11 @@ export default class App extends React.Component {
   };
 
   handleBatch = (val) => {
+    const { onChange } = this.props;
+
     this.setState({ data: val });
+
+    onChange && onChange(val);
   };
 
   render() {
