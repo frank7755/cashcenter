@@ -1,9 +1,20 @@
 import React, { Fragment } from 'react';
 import request from '~js/utils/request';
 import styles from '~css/Goods/GoodsAdd/RuleSet.module.less';
-import { Form, Input, Icon, Button, Row, Col, message, Table } from 'antd';
+import { Form, Input, Icon, Button, Row, Col, message, Table, InputNumber, Modal } from 'antd';
 
 const EditableContext = React.createContext();
+const FormItem = Form.Item;
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
 
 const EditableFormRow = ({ index, ...props }) => (
   <EditableContext.Provider>
@@ -179,6 +190,71 @@ class RulesSet extends React.Component {
 }
 
 @Form.create()
+class BatchSettings extends React.Component {
+  state = { visible: false };
+
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleOk = (e) => {
+    const propsData = [...this.props.data];
+    const { onChange } = this.props;
+
+    this.props.form.validateFields((err, values) => {
+      let newArr = [];
+      if (!err) {
+        newArr = propsData.map((item) => ({ ...item, ...values }));
+
+        onChange && onChange(newArr);
+
+        this.props.form.resetFields();
+      }
+    });
+
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  };
+
+  render() {
+    const { getFieldDecorator } = this.props.form;
+    const { type, text } = this.props;
+
+    return (
+      <Fragment>
+        <Modal title={`修改${text}`} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+          <Form {...formItemLayout}>
+            <FormItem label={text}>
+              {getFieldDecorator(type, {
+                rules: [
+                  {
+                    required: true,
+                    message: `请填写${text}`,
+                  },
+                ],
+              })(<InputNumber style={{ width: 'calc(100% - 80px)' }}></InputNumber>)}
+            </FormItem>
+          </Form>
+        </Modal>
+        <a onClick={this.showModal} style={{ marginLeft: 10 }}>
+          {text}
+        </a>
+      </Fragment>
+    );
+  }
+}
+
+@Form.create()
 export default class App extends React.Component {
   state = {
     rKey: 1,
@@ -233,6 +309,10 @@ export default class App extends React.Component {
     });
     this.setState({ data: newData });
     onChange && onChange(newData);
+  };
+
+  handleBatch = (val) => {
+    this.setState({ data: val });
   };
 
   render() {
@@ -301,6 +381,14 @@ export default class App extends React.Component {
               dataSource={data}
               columns={columns}
               pagination={false}
+              footer={(currentPageData) => {
+                return (
+                  <div>
+                    批量设置<BatchSettings data={data} type="quantity" text="库存" onChange={this.handleBatch}></BatchSettings>
+                    <BatchSettings data={data} type="price" text="价格" onChange={this.handleBatch}></BatchSettings>
+                  </div>
+                );
+              }}
             />
           )}
         </div>
