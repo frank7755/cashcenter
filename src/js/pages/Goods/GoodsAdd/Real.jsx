@@ -352,7 +352,7 @@ export default class App extends React.Component {
           </FormItem>
           <FormItem label="是否上架">
             {getFieldDecorator('is_display', {
-              initialValue: 1,
+              initialValue: 0,
               rules: [{ required: true, message: '请选择是否上架' }],
             })(
               <Select>

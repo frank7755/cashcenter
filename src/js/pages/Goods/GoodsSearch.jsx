@@ -327,6 +327,10 @@ class ChangeGroup extends React.Component {
 
 @serveTable()
 class GoodsTable extends React.Component {
+  state = {
+    goodSort: [],
+  };
+
   columns = [
     {
       title: '商品名称',
@@ -353,6 +357,7 @@ class GoodsTable extends React.Component {
       dataIndex: 'quantity',
       width: 100,
     },
+
     {
       title: '价格',
       dataIndex: 'price',
@@ -372,6 +377,11 @@ class GoodsTable extends React.Component {
           <span style={{ color: '#fc5050' }}>未上架</span>
         );
       },
+    },
+    {
+      title: '商品分组',
+      dataIndex: 'tag_ids',
+      width: 150,
     },
     {
       title: '创建时间',
@@ -420,6 +430,12 @@ class GoodsTable extends React.Component {
     },
   ];
 
+  componentDidMount() {
+    request('/api/t_goods_fz_select?type=1').then((payload) => {
+      this.setState({ goodsSort: payload.pageData });
+    });
+  }
+
   handleDelete = (id, item_id) => {
     request('/api/t_goods/delete', {
       method: 'post',
@@ -435,6 +451,7 @@ class GoodsTable extends React.Component {
       })
       .catch((error) => message.error(error.message));
   };
+
   handleOn = (id, item_id) => {
     const { table } = this.props;
 
@@ -495,6 +512,7 @@ class GoodsTable extends React.Component {
 
   render() {
     const { table, supply, user_name, user_id, ...restProps } = this.props;
+    const { goodsSort } = this.state;
 
     return (
       <Fragment>
@@ -541,6 +559,23 @@ class GoodsTable extends React.Component {
                         initialValue: [moment().subtract(1, 'year'), moment()],
                       })(
                         <RangePicker allowClear={false} style={{ width: 'calc(100% - 80px)' }} ranges={this.getDateRanges()} />
+                      )}
+                    </span>
+                  </Col>
+                </Row>
+                <Row gutter={32}>
+                  <Col span={8}>
+                    <span className={styles.rowItem}>
+                      <label>商品分组：</label>
+                      {getFieldDecorator('tag_ids')(
+                        <Select style={{ width: 'calc(100% - 80px)' }}>
+                          {goodsSort &&
+                            goodsSort.map((item) => (
+                              <Option value={item.value} key={item.value}>
+                                {item.label}
+                              </Option>
+                            ))}
+                        </Select>
                       )}
                     </span>
                   </Col>

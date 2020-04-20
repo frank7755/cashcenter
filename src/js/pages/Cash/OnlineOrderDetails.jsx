@@ -15,13 +15,13 @@ const status = {
   '30': '买家已经退货，等待卖家确认收货',
   '40': '卖家未收到货,拒绝退款',
   '50': '退款关闭',
-  '60': '退款成功'
+  '60': '退款成功',
 };
 
 @Form.create()
 class Refund extends React.Component {
   state = {
-    visible: false
+    visible: false,
   };
 
   handleRefund = () => {
@@ -36,9 +36,9 @@ class Refund extends React.Component {
             tid: this.props.tid,
             oid: this.props.oid,
             yz_token_info: this.props.yztoken,
-            ...value
-          }
-        }).then(payload => {
+            ...value,
+          },
+        }).then((payload) => {
           message.success('退款成功');
           this.setState({ visible: false });
           onChange && onChange();
@@ -49,13 +49,13 @@ class Refund extends React.Component {
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
   render() {
@@ -76,9 +76,9 @@ class Refund extends React.Component {
                 rules: [
                   {
                     required: true,
-                    message: '请输入退款金额'
-                  }
-                ]
+                    message: '请输入退款金额',
+                  },
+                ],
               })(<Input placeholder="请输入退款金额" />)}
             </FormItem>
             <FormItem label="退款备注">
@@ -86,9 +86,9 @@ class Refund extends React.Component {
                 rules: [
                   {
                     required: true,
-                    message: '请输入退款备注'
-                  }
-                ]
+                    message: '请输入退款备注',
+                  },
+                ],
               })(<TextArea placeholder="请输入退款备注" />)}
             </FormItem>
           </Form>
@@ -102,22 +102,22 @@ class GoodsTable extends React.Component {
   columns = [
     {
       title: '商品',
-      dataIndex: 'title'
+      dataIndex: 'title',
     },
     {
       title: '单价',
       dataIndex: 'price',
-      align: 'right'
+      align: 'right',
     },
     {
       title: '商品',
       dataIndex: 'num',
-      align: 'right'
+      align: 'right',
     },
     {
       title: '小计',
       dataIndex: 'discount_price',
-      align: 'right'
+      align: 'right',
     },
     {
       title: '退款状态',
@@ -133,7 +133,7 @@ class GoodsTable extends React.Component {
                 price={record.discount_price}
                 tid={this.props.tid}
                 id={this.props.id}
-                yztoken={this.props.token}
+                yztoken={this.props.yztoken}
                 oid={record.oid}
                 onChange={this.props.onChange}
               >
@@ -149,7 +149,7 @@ class GoodsTable extends React.Component {
               price={record.discount_price}
               tid={this.props.tid}
               id={this.props.id}
-              yztoken={this.props.token}
+              yztoken={this.props.yztoken}
               oid={record.oid}
             >
               主动退款
@@ -164,7 +164,7 @@ class GoodsTable extends React.Component {
               disabled={record.status != null}
               price={record.discount_price}
               tid={this.props.tid}
-              yztoken={this.props.token}
+              yztoken={this.props.yztoken}
               id={this.props.id}
               oid={record.oid}
             >
@@ -172,21 +172,21 @@ class GoodsTable extends React.Component {
             </Refund>
           </div>
         );
-      }
+      },
     },
     {
       title: '发货状态',
       align: 'right',
       dataIndex: 'status',
-      render: status => {
+      render: (status) => {
         if (status == '1') {
           return <span className="textSuccess">已发货</span>;
         } else if (status == null) {
           return <span className="textDelete">待发货</span>;
         }
         return <span className="textDelete">已退款</span>;
-      }
-    }
+      },
+    },
   ];
   render() {
     return <Table rowKey="oid" columns={this.columns} dataSource={this.props.data} pagination={false}></Table>;
@@ -195,7 +195,7 @@ class GoodsTable extends React.Component {
 
 export default class App extends React.Component {
   state = {
-    data: {}
+    data: {},
   };
 
   refresh = () => {
@@ -205,9 +205,9 @@ export default class App extends React.Component {
         id: this.props.id,
         yz_token_info: this.props.yztoken,
         tid: this.props.match.params.id,
-        type: 2
-      }
-    }).then(payload => this.setState({ data: payload.pageData }));
+        type: 2,
+      },
+    }).then((payload) => this.setState({ data: payload.pageData }));
   };
 
   componentDidMount() {
@@ -293,7 +293,7 @@ export default class App extends React.Component {
           tid={data.tid}
           key="oid"
           data={data.oids}
-          yztoken={this.props.token}
+          yztoken={this.props.yztoken}
         ></GoodsTable>
         <div className={styles.bottom}>
           <p>商品总价：￥{formatThousands(data.price)}</p>
