@@ -1,10 +1,12 @@
 import React, { Fragment } from 'react';
 import styles from '~css/login.module.less';
-import { Form, Icon, Input, Button, Checkbox, message, Avatar } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, message, Avatar, Select } from 'antd';
 import request from '~js/utils/request';
 import { store } from '~js/utils/utils';
 import { history } from '~js/utils/utils';
 import { Link } from 'react-router-dom';
+
+const { Option } = Select;
 
 @Form.create()
 class RegisterForm extends React.Component {
@@ -12,10 +14,17 @@ class RegisterForm extends React.Component {
     url: null,
     count: 90,
     disabled: false,
+    shopOptions: [],
+    checkedName: '',
   };
 
   componentDidMount() {
     this.handleCaptcha();
+    request('api/kdt_select').then((payload) =>
+      this.setState({
+        shopOptions: payload.pageData,
+      })
+    );
   }
 
   handleCaptcha = () => {
@@ -31,7 +40,7 @@ class RegisterForm extends React.Component {
       if (!err) {
         request('/api/login/create', {
           method: 'POST',
-          body: values,
+          body: { ...values, yz_shop_name: this.state.checkedName },
           notify: true,
         })
           .then((payload) => {
@@ -70,10 +79,13 @@ class RegisterForm extends React.Component {
       this.setState({ count: 90, disabled: false });
     }
   };
+  handleChange = (a, b) => {
+    this.setState({ checkedName: b.props.dataref.kdt_name });
+  };
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { url, count } = this.state;
+    const { url, count, shopOptions } = this.state;
     return (
       <div className={styles.registerFormBox}>
         <h2>帐号注册</h2>
@@ -130,6 +142,20 @@ class RegisterForm extends React.Component {
                 {count == 90 ? '发送验证码' : `(${count}s)后重试`}
               </Button>
             </div>
+          </Form.Item>
+          <Form.Item>
+            {getFieldDecorator('yz_shop_id', {
+              rules: [{ required: true, message: '请输入密码' }],
+            })(
+              <Select placeholder="请选择商城" onChange={this.handleChange}>
+                {shopOptions &&
+                  shopOptions.map((item) => (
+                    <Option key={item.kdt_id} dataref={item} value={item.kdt_id}>
+                      {item.kdt_name}
+                    </Option>
+                  ))}
+              </Select>
+            )}
           </Form.Item>
           {/* <Form.Item>
             <div className={styles.captchaBox}>
