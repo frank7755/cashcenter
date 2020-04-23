@@ -335,7 +335,7 @@ class GoodsTable extends React.Component {
     {
       title: '商品名称',
       dataIndex: 'name',
-      width: 200,
+      width: 300,
       render(name, record) {
         return (
           <div className={styles.goodsName}>

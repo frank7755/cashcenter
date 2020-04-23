@@ -195,7 +195,7 @@ export default class App extends React.Component {
     imgList: [],
     goodsData: [],
     item_id: '',
-    imgIds: '',
+    imgIds: [],
   };
 
   componentDidMount() {
@@ -216,6 +216,7 @@ export default class App extends React.Component {
         editorState: BraftEditor.createEditorState(payload.pageData.desc),
         kv_list: payload.kv_list,
         item_id: payload.pageData.item_id,
+        imgIds: payload.pageData.photo_info.map((item) => item.image_id),
       });
     });
   }
