@@ -4,12 +4,13 @@ import { history } from '~js/utils/utils';
 import request from '~js/utils/request';
 import { message, Layout, Menu, Icon, Dropdown, Avatar, Modal, Form, Input, Button } from 'antd';
 import styles from '~css/Forget.module.less';
+import Md5 from '~js/utils/md5.js';
 
 const FormItem = Form.Item;
 
 @Form.create()
 export default class App extends React.Component {
-  state = { disabled: false, count: 60, change: false };
+  state = { disabled: false, count: 90, change: false };
 
   handleMessage = () => {
     if (this.props.form.getFieldValue('telnumber')) {
@@ -17,11 +18,11 @@ export default class App extends React.Component {
         method: 'post',
         body: {
           telnumber: this.props.form.getFieldValue('telnumber'),
-          type: 2
-        }
+          type: 2,
+        },
       })
-        .then(payload => (this.timerID = setInterval(() => this.tick(), 1000)))
-        .catch(error => message.error(error.message));
+        .then((payload) => (this.timerID = setInterval(() => this.tick(), 1000)))
+        .catch((error) => message.error(error.message));
     } else {
       message.error('请输入手机号码');
     }
@@ -38,21 +39,22 @@ export default class App extends React.Component {
     }
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, value) => {
+    this.props.form.validateFields((err, values) => {
       if (!err) {
         request('/api/login/forger_user', {
           method: 'post',
           body: {
-            ...value
-          }
+            ...values,
+            pwd: Md5(values.pwd),
+          },
         })
-          .then(payload => {
+          .then((payload) => {
             message.success('修改成功');
             history.push('/login');
           })
-          .catch(error => message.error(error.message));
+          .catch((error) => message.error(error.message));
       }
     });
   };
@@ -73,13 +75,13 @@ export default class App extends React.Component {
                 rules: [
                   {
                     required: true,
-                    message: '请输入手机号'
+                    message: '请输入手机号',
                   },
                   {
                     pattern: /^1[3456789]\d{9}$/,
-                    message: '请输入正确的手机号'
-                  }
-                ]
+                    message: '请输入正确的手机号',
+                  },
+                ],
               })(
                 <Input
                   maxLength={11}
@@ -91,7 +93,7 @@ export default class App extends React.Component {
             <FormItem>
               <div className={styles.message}>
                 {getFieldDecorator('code', {
-                  rules: [{ required: true, message: '请输入短信验证码' }]
+                  rules: [{ required: true, message: '请输入短信验证码' }],
                 })(
                   <Input
                     className={styles.captchaInput}
@@ -101,13 +103,13 @@ export default class App extends React.Component {
                   />
                 )}
                 <Button type="primary" onClick={this.handleMessage} disabled={this.state.disabled}>
-                  {count == 60 ? '发送验证码' : `(${count}s)后重试`}
+                  {count == 90 ? '发送验证码' : `(${count}s)后重试`}
                 </Button>
               </div>
             </FormItem>
             <FormItem>
               {getFieldDecorator('pwd', {
-                rules: [{ required: true, message: '请输入新密码' }]
+                rules: [{ required: true, message: '请输入新密码' }],
               })(
                 <Input
                   prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}

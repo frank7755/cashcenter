@@ -5,6 +5,7 @@ import request from '~js/utils/request';
 import { store } from '~js/utils/utils';
 import { history } from '~js/utils/utils';
 import { Link } from 'react-router-dom';
+import Md5 from '~js/utils/md5.js';
 
 const { Option } = Select;
 
@@ -40,7 +41,7 @@ class RegisterForm extends React.Component {
       if (!err) {
         request('/api/login/create', {
           method: 'POST',
-          body: { ...values, yz_shop_name: this.state.checkedName },
+          body: { ...values, pwd: Md5(values.pwd), yz_shop_name: this.state.checkedName },
           notify: true,
         })
           .then((payload) => {
@@ -225,10 +226,9 @@ export default class App extends React.Component {
         } else {
           store.remove(storeAccount);
         }
-
         request('/api/login_user', {
           method: 'POST',
-          body: values,
+          body: { ...values, pwd: Md5(values.pwd) },
         })
           .then((payload) => {
             const { history } = this.props;

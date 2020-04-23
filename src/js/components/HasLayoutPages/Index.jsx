@@ -6,6 +6,7 @@ import { store } from '~js/utils/utils';
 import menu from '~js/pages/menu.js';
 import { withRouter } from 'react-router-dom';
 import styles from './Index.module.less';
+import Md5 from '~js/utils/md5.js';
 
 const storeToken = 'userToken';
 const storeYzToken = 'YZtoken';
@@ -38,7 +39,7 @@ class ChangePassword extends React.Component {
           request('/api/login/update_user', {
             method: 'post',
             body: {
-              pwd: value.pwd,
+              pwd: Md5(value.pwd),
               telnumber: store.get(tel),
             },
           })
