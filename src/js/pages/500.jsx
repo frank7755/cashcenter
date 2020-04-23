@@ -6,8 +6,8 @@ export default class App extends React.Component {
   render() {
     return (
       <Result
-        status="404"
-        title="404"
+        status="500"
+        title="500"
         subTitle="服务器发生了错误"
         extra={
           <Link to="/">

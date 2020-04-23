@@ -277,11 +277,9 @@ export default class App extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-
     this.props.form.validateFields((err, value) => {
       const { onChange } = this.props;
       const { data } = this.state;
-
       if (!err) {
         request('/api/t_goods_sku_create', {
           method: 'post',
@@ -289,8 +287,7 @@ export default class App extends React.Component {
           body: { skulist: value, tmpskus: data },
         }).then((payload) => {
           this.setState({ data: payload.pageData, names: payload.key_list });
-
-          onChange && onChange(data);
+          onChange && onChange(payload.pageData);
         });
       } else {
         message.error('请填写规格与规格值!');

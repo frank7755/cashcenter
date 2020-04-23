@@ -326,6 +326,7 @@ export default class App extends React.Component {
         component: <RictTextImages onChange={(val) => this.handleImageChange(val)}></RictTextImages>,
       },
     ];
+    console.log(goodsData);
 
     return (
       <div className={styles.goodsEdit}>
@@ -335,7 +336,7 @@ export default class App extends React.Component {
           </h2>
           <FormItem label="商品名称">
             {getFieldDecorator('title', {
-              initialValue: goodsData.title,
+              initialValue: goodsData && goodsData.title,
               rules: [{ required: true, message: '请输入商品名称' }],
             })(<Input placeholder="请输入商品名称" />)}
           </FormItem>
@@ -359,7 +360,7 @@ export default class App extends React.Component {
             }
           >
             {getFieldDecorator('sell_point', {
-              initialValue: goodsData.sell_point,
+              initialValue: goodsData && goodsData.sell_point,
             })(<Input />)}
           </FormItem>
           <Row style={{ margin: '24px 0' }}>
@@ -384,13 +385,13 @@ export default class App extends React.Component {
           </FormItem>
           <FormItem label="划线价">
             {getFieldDecorator('origin_price', {
-              initialValue: goodsData.origin_price,
+              initialValue: goodsData && goodsData.origin_price,
               rules: [{ required: true, message: '请填写划线价' }],
             })(<Input type="text"></Input>)}
           </FormItem>
           <FormItem label="是否上架">
             {getFieldDecorator('is_display', {
-              initialValue: goodsData.is_display ? goodsData.is_display : 1,
+              initialValue: goodsData && goodsData.is_display,
               rules: [{ required: true, message: '请选择是否上架' }],
             })(
               <Select>

@@ -218,6 +218,8 @@ export default class App extends React.Component {
           .catch((error) => {
             message.error(error.message);
           });
+      } else {
+        message.error('请填写必填项目');
       }
     });
   };
