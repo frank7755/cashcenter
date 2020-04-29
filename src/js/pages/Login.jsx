@@ -325,6 +325,7 @@ export default class App extends React.Component {
         ) : (
           <RegisterForm history={history}></RegisterForm>
         )}
+        <div className={styles.bottomIcp}>版权所有：武汉市微蚁云网络科技有限公司  鄂ICP备20004598号</div>
       </div>
     );
   }
