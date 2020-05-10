@@ -326,7 +326,6 @@ export default class App extends React.Component {
         component: <RictTextImages onChange={(val) => this.handleImageChange(val)}></RictTextImages>,
       },
     ];
-    console.log(goodsData);
 
     return (
       <div className={styles.goodsEdit}>

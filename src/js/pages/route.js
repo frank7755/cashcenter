@@ -16,9 +16,10 @@ export default {
     layout: false,
     component: loadable(() => import('~js/pages/Forget.jsx')),
   },
-  // '/shopinfo': {
-  //   component: loadable(() => import('~js/pages/Shop/ShopInfo.jsx'))
-  // },
+  '/shop': {
+    layout: false,
+    component: loadable(() => import('~js/pages/Shop/Shop.jsx'))
+  },
   '/staffmanage': {
     component: loadable(() => import('~js/pages/Shop/StaffManage.jsx')),
   },

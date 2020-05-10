@@ -233,7 +233,11 @@ export default class App extends React.Component {
           .then((payload) => {
             const { history } = this.props;
 
-            history.push('/');
+            if (payload.user_role == '1') {
+              history.push('/shop');
+            } else {
+              history.push('/cashcenter');
+            }
 
             store.set(storeToken, payload.token_info);
             store.set(storeYzToken, payload.yz_token_info);
@@ -325,7 +329,7 @@ export default class App extends React.Component {
         ) : (
           <RegisterForm history={history}></RegisterForm>
         )}
-        <div className={styles.bottomIcp}>版权所有：武汉市微蚁云网络科技有限公司  鄂ICP备20004598号</div>
+        <div className={styles.bottomIcp}>版权所有：武汉市微蚁云网络科技有限公司 鄂ICP备20004598号</div>
       </div>
     );
   }
