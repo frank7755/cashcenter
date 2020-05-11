@@ -101,3 +101,28 @@
     }
   }
 }
+
+.goodsDetails,
+.goodsTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  > span {
+    &:nth-child(1) {
+      width: 25%;
+    }
+    &:nth-child(2) {
+      width: 40%;
+    }
+    &:nth-child(3) {
+      width: 20%;
+    }
+    &:nth-child(4) {
+      width: 15%;
+    }
+  }
+}
+.goodsTitle {
+  font-weight: bold;
+}

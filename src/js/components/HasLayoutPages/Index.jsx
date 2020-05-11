@@ -162,6 +162,7 @@ class App extends React.Component {
 
     history.push('/shop');
   };
+
   render() {
     const { SubMenu } = Menu;
     const { Header, Content, Sider } = Layout;

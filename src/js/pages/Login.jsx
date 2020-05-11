@@ -205,6 +205,10 @@ export default class App extends React.Component {
     remember: store.get(storeAccountState) != 0,
   };
 
+  componentDidMount() {
+    self.localStorage.clear();
+  }
+
   handleRemember = (e) => {
     const { checked } = e.target;
 
@@ -234,18 +238,18 @@ export default class App extends React.Component {
           .then((payload) => {
             const { history } = this.props;
 
-            if (payload.user_role == '1') {
-              history.push('/shop');
-            } else {
-              history.push('/cashcenter');
-            }
-
             store.set(storeToken, payload.token_info);
             store.set(storeYzToken, payload.yz_token_info);
             store.set(userId, payload.id);
             store.set(tel, payload.telnumber);
             store.set(shopName, payload.shop_name);
             store.set(name, payload.user_name);
+
+            if (payload.user_role == '1') {
+              history.push('/shop');
+            } else {
+              history.push('/cashcenter');
+            }
           })
           .catch((error) => message.error(error.message));
       }

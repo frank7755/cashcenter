@@ -544,8 +544,9 @@ class GoodsTable extends React.Component {
                   <Col span={8}>
                     <span className={styles.rowItem}>
                       <label>商品状态：</label>
-                      {getFieldDecorator('is_display', { initialValue: 1 })(
+                      {getFieldDecorator('is_display', { initialValue: -1 })(
                         <Select style={{ width: 'calc(100% - 80px)' }}>
+                          <Option value={-1}>全部</Option>
                           <Option value={1}>已上架</Option>
                           <Option value={0}>未上架</Option>
                         </Select>

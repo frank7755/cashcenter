@@ -659,7 +659,8 @@ class PayDrawer extends React.Component {
 
   render() {
     const { GuideSource, VipSource, staff_id, staff_name, vip_id, userSettingDiscount, value } = this.state;
-    const { sumAmount, sumPay, sumCount } = this.props;
+    const { sumAmount, sumPay, sumCount, data } = this.props;
+    console.log(data);
 
     return (
       <FormDrawer
@@ -679,7 +680,6 @@ class PayDrawer extends React.Component {
       >
         {({ form }) => {
           const { getFieldDecorator } = form;
-
           return (
             <Fragment>
               <section>
@@ -803,6 +803,22 @@ class PayDrawer extends React.Component {
                     style={{ width: '100%', color: '#fc5050', fontSize: 16 }}
                   />
                 )}
+              </FormItem>
+              <FormItem label="商品明细">
+                <div className={styles.goodsTitle}>
+                  <span>商品</span>
+                  <span>规格</span>
+                  <span>数量*单价</span>
+                  <span>优惠价</span>
+                </div>
+                {data.map((item) => (
+                  <div key={item.item_id} className={styles.goodsDetails}>
+                    <span className="textEdit">{item.name}</span>
+                    <span>{item.properties_name_json}</span>
+                    <span className="textHighLight">{item.price + '*' + item.count}</span>
+                    <span className="textHighLight">{item.newPrice_num ? item.newPrice_num : item.price_num}</span>
+                  </div>
+                ))}
               </FormItem>
             </Fragment>
           );
