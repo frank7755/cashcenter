@@ -140,8 +140,6 @@ class StaffInfo extends React.Component {
     const { getFieldDecorator } = this.props.form;
     const { type, data } = this.props;
 
-    console.log(data);
-
     return (
       <Fragment>
         {type == 'add' ? (

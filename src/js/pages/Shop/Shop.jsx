@@ -6,6 +6,7 @@ import styles from '~css/Shop/Shop.module.less';
 import { Button, Empty, Modal, Form, Input, Card, Row, Col, message, Popconfirm } from 'antd';
 import { Link } from 'react-router-dom';
 
+const shopName = 'shopName';
 const FromItem = Form.Item;
 
 @Form.create()
@@ -163,10 +164,11 @@ export default class App extends React.Component {
       },
     })
       .then((payload) => {
-        history.push('/');
-
+        store.set(shopName, payload.shop_name);
         store.set(userId, id);
         store.set(storeToken, payload.token_info);
+
+        history.push('/');
       })
       .catch((error) => {
         message.error(error.message);

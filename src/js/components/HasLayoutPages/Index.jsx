@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import request from '~js/utils/request';
-import { message, Layout, Menu, Icon, Dropdown, Avatar, Modal, Form, Input } from 'antd';
+import { message, Layout, Menu, Icon, Dropdown, Avatar, Modal, Form, Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { store } from '~js/utils/utils';
 import menu from '~js/pages/menu.js';
@@ -13,6 +13,7 @@ const storeYzToken = 'YZtoken';
 const userId = 'userId';
 const name = 'userName';
 const tel = 'telnumber';
+const shopName = 'shopName';
 const FormItem = Form.Item;
 
 @Form.create()
@@ -133,6 +134,7 @@ class App extends React.Component {
     store.remove(storeYzToken);
     store.remove(userId);
     store.remove(name);
+    store.remove(shopName);
     store.remove(tel);
   };
 
@@ -154,6 +156,12 @@ class App extends React.Component {
       0
     );
   }
+
+  handleSwap = () => {
+    const { history } = this.props;
+
+    history.push('/shop');
+  };
   render() {
     const { SubMenu } = Menu;
     const { Header, Content, Sider } = Layout;
@@ -236,6 +244,12 @@ class App extends React.Component {
         </Sider>
         <Layout style={{ marginLeft: 200 }}>
           <Header className={styles.header}>
+            <h2>
+              {store.get(shopName)}
+              <Button type="ghost" icon="sync" style={{ marginLeft: 15 }} onClick={this.handleSwap}>
+                切换店铺
+              </Button>
+            </h2>
             <ul>
               <Dropdown overlay={wechatOverLay} placement="bottomRight">
                 <li>

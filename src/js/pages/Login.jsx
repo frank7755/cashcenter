@@ -195,6 +195,7 @@ const storeToken = 'userToken';
 const storeYzToken = 'YZtoken';
 const userId = 'userId';
 const name = 'userName';
+const shopName = 'shopName';
 const tel = 'telnumber';
 
 @Form.create()
@@ -243,6 +244,7 @@ export default class App extends React.Component {
             store.set(storeYzToken, payload.yz_token_info);
             store.set(userId, payload.id);
             store.set(tel, payload.telnumber);
+            store.set(shopName, payload.shop_name);
             store.set(name, payload.user_name);
           })
           .catch((error) => message.error(error.message));
