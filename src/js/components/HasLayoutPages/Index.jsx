@@ -3,7 +3,7 @@ import request from '~js/utils/request';
 import { message, Layout, Menu, Icon, Dropdown, Avatar, Modal, Form, Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { store } from '~js/utils/utils';
-import menu from '~js/pages/menu.js';
+import defaultMenu from '~js/pages/menu.js';
 import { withRouter } from 'react-router-dom';
 import styles from './Index.module.less';
 import Md5 from '~js/utils/md5.js';
@@ -14,6 +14,8 @@ const userId = 'userId';
 const name = 'userName';
 const tel = 'telnumber';
 const shopName = 'shopName';
+const role = 'userRole';
+const shopType = 'shopType';
 const FormItem = Form.Item;
 
 @Form.create()
@@ -110,17 +112,37 @@ class App extends React.Component {
   state = {
     draw: false,
     openKeys: ['8'],
+    menu: '',
   };
 
   onOpenChange = (openKeys) => {
     this.setState({ openKeys });
   };
 
+  getMenu = () => {
+    if (store.get(role) == '1') {
+      if (store.get(shopType) == '1') {
+        this.setState({ menu: 'food' });
+      } else if (store.get(shopType) == '2') {
+        this.setState({ menu: 'retail' });
+      }
+    } else {
+      if (store.get(shopType) == '2') {
+        this.setState({ menu: 'retailStaff' });
+      }
+    }
+  };
+
   componentDidMount() {
-    if (menu.filter(({ children }) => children.some(({ src }) => this.props.location.pathname == src)).length > 0) {
+    const { menu } = this.state;
+    if (
+      defaultMenu[menu].filter(({ children }) => children.some(({ src }) => this.props.location.pathname == src)).length > 0
+    ) {
       this.setState({
         openKeys: [
-          menu.filter((item) => item.children.some(({ src }) => this.props.location.pathname == src))[0].key.toString(),
+          defaultMenu[menu]
+            .filter((item) => item.children.some(({ src }) => this.props.location.pathname == src))[0]
+            .key.toString(),
         ],
       });
     } else {
@@ -136,9 +158,11 @@ class App extends React.Component {
     store.remove(name);
     store.remove(shopName);
     store.remove(tel);
+    store.remove(role);
   };
 
   componentWillMount() {
+    this.getMenu();
     setTimeout(
       () =>
         request('/api/login_check', {
@@ -166,7 +190,7 @@ class App extends React.Component {
   render() {
     const { SubMenu } = Menu;
     const { Header, Content, Sider } = Layout;
-    const { draw } = this.state;
+    const { draw, menu } = this.state;
     const path = this.props.location.pathname;
 
     const userSlideMenu = (
@@ -223,7 +247,7 @@ class App extends React.Component {
             defaultOpenKeys={this.state.openKeys}
             selectedKeys={[`${path}`]}
           >
-            {menu.map((nav) => (
+            {defaultMenu[menu].map((nav) => (
               <SubMenu
                 key={nav.key}
                 title={
@@ -247,9 +271,13 @@ class App extends React.Component {
           <Header className={styles.header}>
             <h2>
               {store.get(shopName)}
-              <Button type="ghost" icon="sync" style={{ marginLeft: 15 }} onClick={this.handleSwap}>
-                切换店铺
-              </Button>
+              {store.get(role) == '1' ? (
+                <Button type="ghost" icon="sync" style={{ marginLeft: 15 }} onClick={this.handleSwap}>
+                  切换店铺
+                </Button>
+              ) : (
+                ''
+              )}
             </h2>
             <ul>
               <Dropdown overlay={wechatOverLay} placement="bottomRight">

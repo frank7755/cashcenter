@@ -660,7 +660,6 @@ class PayDrawer extends React.Component {
   render() {
     const { GuideSource, VipSource, staff_id, staff_name, vip_id, userSettingDiscount, value } = this.state;
     const { sumAmount, sumPay, sumCount, data } = this.props;
-    console.log(data);
 
     return (
       <FormDrawer

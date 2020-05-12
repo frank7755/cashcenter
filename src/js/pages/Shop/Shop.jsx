@@ -3,11 +3,11 @@ import request from '~js/utils/request';
 import { store } from '~js/utils/utils';
 import moment from 'moment';
 import styles from '~css/Shop/Shop.module.less';
-import { Button, Empty, Modal, Form, Input, Card, Row, Col, message, Popconfirm } from 'antd';
+import { Button, Empty, Modal, Form, Input, Card, Row, Col, message, Popconfirm, Select } from 'antd';
 import { Link } from 'react-router-dom';
 
-const shopName = 'shopName';
 const FromItem = Form.Item;
+const Option = Select.Option;
 
 @Form.create()
 class AddShop extends React.Component {
@@ -105,6 +105,17 @@ class AddShop extends React.Component {
                 rules: [{ required: true, message: '请输入门店名称!' }],
               })(<Input placeholder="请输入门店名称" />)}
             </FromItem>
+            <FromItem label="店铺行业">
+              {getFieldDecorator('shop_type', {
+                initialValue: data && data.shop_type,
+                rules: [{ required: true, message: '请输入门店名称!' }],
+              })(
+                <Select placeholder="请选择行业">
+                  <Option value={'1'}>餐饮行业</Option>
+                  <Option value={'2'}>零售行业</Option>
+                </Select>
+              )}
+            </FromItem>
             <FromItem label="店铺地址">
               {getFieldDecorator('address', {
                 initialValue: data && data.address,
@@ -120,6 +131,8 @@ class AddShop extends React.Component {
 const userId = 'userId';
 const tel = 'telnumber';
 const storeToken = 'userToken';
+const shopName = 'shopName';
+const shopType = 'shopType';
 
 export default class App extends React.Component {
   state = {
@@ -167,6 +180,7 @@ export default class App extends React.Component {
         store.set(shopName, payload.shop_name);
         store.set(userId, id);
         store.set(storeToken, payload.token_info);
+        store.set(shopType, payload.shop_type);
 
         history.push('/');
       })

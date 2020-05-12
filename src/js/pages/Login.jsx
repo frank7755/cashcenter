@@ -197,6 +197,8 @@ const userId = 'userId';
 const name = 'userName';
 const shopName = 'shopName';
 const tel = 'telnumber';
+const role = 'userRole';
+const shopType = 'shopType';
 
 @Form.create()
 export default class App extends React.Component {
@@ -206,7 +208,14 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    self.localStorage.clear();
+    store.remove(storeToken);
+    store.remove(storeYzToken);
+    store.remove(userId);
+    store.remove(tel);
+    store.remove(shopName);
+    store.remove(name);
+    store.remove(role);
+    store.remove(shopType);
   }
 
   handleRemember = (e) => {
@@ -244,6 +253,8 @@ export default class App extends React.Component {
             store.set(tel, payload.telnumber);
             store.set(shopName, payload.shop_name);
             store.set(name, payload.user_name);
+            store.set(role, payload.user_role);
+            store.set(shopType, payload.shop_type);
 
             if (payload.user_role == '1') {
               history.push('/shop');
