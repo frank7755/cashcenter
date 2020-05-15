@@ -9,19 +9,22 @@ const { Option } = Select;
 @Form.create()
 class UploadFile extends React.Component {
   state = {
-    file: null,
+    fileList: [],
     uploading: false,
   };
 
   handleUpload = () => {
-    const { file } = this.state;
+    const { fileList } = this.state;
     const formData = new FormData();
+
+    fileList.forEach((file) => {
+      formData.append('image', file);
+    });
 
     this.props.form.validateFields((error, values) => {
       const { onChange } = this.props;
 
       if (!error) {
-        formData.append('image', file);
         formData.append('id', this.props.id);
         formData.append('name', values.name);
         formData.append('type', 1);
@@ -37,7 +40,7 @@ class UploadFile extends React.Component {
           success: (res) => {
             if (res.code == 200) {
               this.setState({
-                fileList: null,
+                fileList: [],
               });
               message.success('上传成功');
               onChange && onChange();
@@ -70,91 +73,43 @@ class UploadFile extends React.Component {
     });
   };
 
-  handleFile = (file, callback) => {
-    const reader = new FileReader();
-    const img = new Image();
-    const name = file.name;
-
-    reader.readAsDataURL(file);
-
-    reader.onload = function (e) {
-      img.src = e.target.result;
-    };
-
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
-
-    img.onload = function () {
-      // 图片原始尺寸
-      var originWidth = this.width;
-      var originHeight = this.height;
-      // 最大尺寸限制
-      var maxWidth = 750,
-        maxHeight = 750;
-      // 目标尺寸
-      var targetWidth = originWidth,
-        targetHeight = originHeight;
-      // 图片尺寸超过400x400的限制
-      if (originWidth > maxWidth || originHeight > maxHeight) {
-        if (originWidth / originHeight > maxWidth / maxHeight) {
-          // 更宽，按照宽度限定尺寸
-          targetWidth = maxWidth;
-          targetHeight = Math.round(maxWidth * (originHeight / originWidth));
-        } else {
-          targetHeight = maxHeight;
-          targetWidth = Math.round(maxHeight * (originWidth / originHeight));
-        }
-      }
-
-      canvas.width = targetWidth;
-      canvas.height = targetHeight;
-      // 清除画布
-      context.clearRect(0, 0, targetWidth, targetHeight);
-      // 图片压缩
-      context.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-      canvas.toBlob(function (blob) {
-        callback(blob, name);
-      });
-    };
-  };
-
-  blobToFile = (blob, fileName) => {
-    blob.lastModifiedDate = new Date();
-    blob.name = fileName;
-    return blob;
-  };
-
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { file } = this.state;
+    const { fileList } = this.state;
 
     const props = {
       onChange: (item) => {
-        this.setState({ file: item.file });
+        if (item.fileList.length > 1) {
+          const newFileList = fileList.splice(-1, 1);
+          this.setState({ fileList: newFileList });
+          return false;
+        }
       },
       onRemove: (file) => {
-        this.setState({ file: null });
+        this.setState((state) => {
+          const index = state.fileList.indexOf(file);
+          const newFileList = state.fileList.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList: newFileList,
+          };
+        });
       },
       beforeUpload: (file) => {
-        this.handleFile(file, (blob, name) => {
-          const isJpgOrPng = blob.type === 'image/jpeg' || blob.type === 'image/png' || blob.type === 'image/gif';
-          if (!isJpgOrPng) {
-            message.error('请上传jpg，png或gif格式图片');
-          }
-          const isLt2M = blob.size / 1024 / 1024 < 2;
-          if (!isLt2M) {
-            message.error('图片大小不超过2MB!');
-          }
-
-          this.setState({
-            file: isJpgOrPng && isLt2M ? this.blobToFile(blob, name) : null,
-          });
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif';
+        if (!isJpgOrPng) {
+          message.error('请上传jpg，png或gif格式图片');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 1;
+        if (!isLt2M) {
+          message.error('图片大小不超过1MB!');
+        }
+        this.setState({
+          fileList: isJpgOrPng && isLt2M ? [...this.state.fileList, file] : [],
         });
-
         return false;
       },
-      file,
+      fileList,
     };
 
     return (
@@ -449,11 +404,11 @@ export default class App extends React.Component {
   };
 
   handleChecked = (e) => {
-    const { onChange } = this.props;
+    const { onChange, maxChecked } = this.props;
     let newArr = [...this.props.checkedData];
 
     if (e.target.checked) {
-      newArr.length < 15 ? newArr.push(e.target.checkedValue) : message.error('请选择不超过15张图片');
+      newArr.length < maxChecked ? newArr.push(e.target.checkedValue) : message.error(`请选择不超过${maxChecked}张图片`);
     } else {
       newArr = newArr.filter((item) => item.image_id != e.target.value);
     }

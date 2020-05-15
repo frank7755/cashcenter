@@ -6,13 +6,13 @@ export default {
       children: [
         {
           key: 801,
-          title: '收银中心',
-          src: '/cashcenter',
+          title: '菜品下单',
+          src: '/foodscash',
         },
         {
           key: 802,
           title: '销售查询',
-          src: '/sellsearch',
+          src: '/foodssell',
         },
         {
           key: 803,
@@ -37,8 +37,8 @@ export default {
         },
         {
           key: 403,
-          title: '商品添加',
-          src: '/goodsadd',
+          title: '菜品添加',
+          src: '/foodsadd',
         },
       ],
     },

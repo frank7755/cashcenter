@@ -18,7 +18,7 @@ export default {
   },
   '/shop': {
     layout: false,
-    component: loadable(() => import('~js/pages/Shop/Shop.jsx'))
+    component: loadable(() => import('~js/pages/Shop/Shop.jsx')),
   },
   '/staffmanage': {
     component: loadable(() => import('~js/pages/Shop/StaffManage.jsx')),
@@ -28,6 +28,9 @@ export default {
   },
   '/goodsadd': {
     component: loadable(() => import('~js/pages/Goods/GoodsAdd/Index.jsx')),
+  },
+  '/foodsadd': {
+    component: loadable(() => import('~js/pages/Foods/FoodsAdd.jsx')),
   },
   // '/ruleset': {
   //   component: loadable(() => import('~js/pages/Goods/GoodsAdd/RuleSet.jsx'))
@@ -58,6 +61,12 @@ export default {
   },
   '/cashcenter': {
     component: loadable(() => import('~js/pages/Cash/CashCenter.jsx')), //收银中心
+  },
+  '/foodscash': {
+    component: loadable(() => import('~js/pages/Foods/FoodsCash.jsx')), //收银中心
+  },
+  '/foodssell': {
+    component: loadable(() => import('~js/pages/Foods/FoodsSell.jsx')), //收银中心
   },
   '/sellsearch': {
     component: loadable(() => import('~js/pages/Cash/SellSearch.jsx')), //销售查询

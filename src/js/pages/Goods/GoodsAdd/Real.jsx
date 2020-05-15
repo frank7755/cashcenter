@@ -106,6 +106,7 @@ class GetImageGroup extends React.Component {
             onChange={this.getImageUrl}
             checkedID={checkedID}
             checkedData={imgData}
+            maxChecked={15}
           ></Picture>
         </Modal>
       </div>
