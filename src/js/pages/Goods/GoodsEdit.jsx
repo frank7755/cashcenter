@@ -202,7 +202,12 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    request('/api/t_goods_fz_select').then((payload) => {
+    request('/api/t_goods_fz_select', {
+      method: 'post',
+      body: {
+        shop_type: store.get(shopType),
+      },
+    }).then((payload) => {
       this.setState({ goodsSort: payload.pageData });
     });
 

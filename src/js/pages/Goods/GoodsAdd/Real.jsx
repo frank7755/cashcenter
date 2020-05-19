@@ -4,11 +4,13 @@ import { Form, Input, Select, Upload, Icon, Modal, Button, Table, Row, Col, Casc
 import request from '~js/utils/request';
 import RuleSet from './RuleSet';
 import Picture from '../../Upload/Pictures';
+import { store } from '~js/utils/utils';
 import BraftEditor from 'braft-editor';
 import { ContentUtils } from 'braft-utils';
 // 引入编辑器样式
 import 'braft-editor/dist/index.css';
 
+const shopType = 'shopType';
 const FormItem = Form.Item;
 const { Option } = Select;
 const formItemLayout = {
@@ -187,7 +189,12 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    request('/api/t_goods_fz_select').then((payload) => {
+    request('/api/t_goods_fz_select', {
+      method: 'post',
+      body: {
+        shop_type: store.get(shopType),
+      },
+    }).then((payload) => {
       this.setState({ goodsSort: payload.pageData });
     });
   }

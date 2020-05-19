@@ -4,6 +4,7 @@ import { formatThousands } from '~js/utils/utils';
 import moment from 'moment';
 import styles from '~css/Goods/GoodsSearch.module.less';
 import { history } from '~js/utils/utils';
+import { store } from '~js/utils/utils';
 import FormSearch from '~js/components/FormSearch/';
 import serveTable from '~js/components/serveTable';
 import {
@@ -32,6 +33,7 @@ import {
   getYesterday,
 } from '~js/utils/date-fns';
 
+const shopType = 'shopType';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const { RangePicker } = DatePicker;
@@ -431,7 +433,12 @@ class GoodsTable extends React.Component {
   ];
 
   componentDidMount() {
-    request('/api/t_goods_fz_select?type=1').then((payload) => {
+    request('/api/t_goods_fz_select', {
+      method: 'post',
+      body: {
+        shop_type: store.get(shopType),
+      },
+    }).then((payload) => {
       this.setState({ goodsSort: payload.pageData });
     });
   }
