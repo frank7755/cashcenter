@@ -1,15 +1,35 @@
 import React, { Fragment } from 'react';
 import styles from '~css/Foods/FoodsAdd.module.less';
-import { Form, Input, Select, Upload, Icon, Modal, Button, Table, Row, Col, Cascader, Avatar, message, Tooltip } from 'antd';
+import {
+  Form,
+  Input,
+  Select,
+  Upload,
+  Icon,
+  Modal,
+  Button,
+  Table,
+  Row,
+  Col,
+  Cascader,
+  Avatar,
+  message,
+  Tooltip,
+  AutoComplete,
+} from 'antd';
 import request from '~js/utils/request';
+import { formatThousands, debounce } from '~js/utils/utils';
 import Picture from '../Upload/Pictures';
 import BraftEditor from 'braft-editor';
+import { store } from '~js/utils/utils';
 import { ContentUtils } from 'braft-utils';
 // 引入编辑器样式
 import 'braft-editor/dist/index.css';
 
+const shopType = 'shopType';
 const FormItem = Form.Item;
 const { Option } = Select;
+const { Option: AutoOption } = AutoComplete;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -182,10 +202,17 @@ export default class App extends React.Component {
     goodsSort: [],
     checkedValue: [],
     imgList: [],
+    sortValue: '',
+    dataSource: [],
   };
 
   componentDidMount() {
-    request('/api/t_goods_fz_select').then((payload) => {
+    request('/api/t_goods_fz_select', {
+      method: 'post',
+      body: {
+        shop_type: store.get(shopType),
+      },
+    }).then((payload) => {
       this.setState({ goodsSort: payload.pageData });
     });
   }
@@ -245,9 +272,38 @@ export default class App extends React.Component {
     });
   };
 
+  renderOptions = (item) => {
+    return (
+      <AutoOption key={item.tgoods_type} value={item.tgoods_type}>
+        <div>{item.tgoods_type}</div>
+      </AutoOption>
+    );
+  };
+
+  handleSelect = (val) => {
+    this.setState({ sortValue: val });
+  };
+
+  searchResult = (val) => {
+    request('/api/catering/tgoods_type_sel', {
+      method: 'post',
+      body: {
+        id: this.props.id,
+        tgoods_type: val,
+      },
+    }).then((payload) => {
+      this.setState({ dataSource: payload.pageData });
+    });
+  };
+
+  @debounce(150)
+  handleSearch = (value) => {
+    value ? this.searchResult(value) : this.setState({ dataSource: [] });
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { editorState, goodsSort, checkedValue, imgList } = this.state;
+    const { editorState, goodsSort, sortValue, dataSource } = this.state;
 
     const controls = [
       'undo',
@@ -320,6 +376,19 @@ export default class App extends React.Component {
               initialValue: [],
               rules: [{ required: true, message: '请选择商品分组' }],
             })(<Cascader options={goodsSort} />)}
+          </FormItem>
+          <FormItem label="商品分类">
+            {getFieldDecorator('tgoods_type', {
+              initialValue: this.state.sortValue,
+              rules: [{ required: true, message: '请选择或填写商品分类' }],
+            })(
+              <AutoComplete
+                optionLabelProp="value"
+                dataSource={dataSource.map(this.renderOptions)}
+                onSelect={this.handleSelect}
+                onSearch={this.handleSearch}
+              ></AutoComplete>
+            )}
           </FormItem>
           <FormItem label="商品价格">
             {getFieldDecorator('price', {

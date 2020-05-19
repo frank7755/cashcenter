@@ -31,6 +31,14 @@ export default class App extends React.Component {
       dataIndex: 'ticket_code',
     },
     {
+      title: '优惠明细',
+      dataIndex: 'description',
+    },
+    {
+      title: '优惠金额',
+      dataIndex: 'value',
+    },
+    {
       title: '卡券类型',
       dataIndex: 'consume_type',
       render(val) {
