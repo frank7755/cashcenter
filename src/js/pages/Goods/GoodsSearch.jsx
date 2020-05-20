@@ -265,7 +265,12 @@ class ChangeGroup extends React.Component {
   };
 
   showModal = () => {
-    request('/api/t_goods_fz_select').then((payload) => {
+    request('/api/t_goods_fz_select', {
+      method: 'post',
+      body: {
+        shop_type: store.get(shopType),
+      },
+    }).then((payload) => {
       this.setState({ data: payload.pageData, visible: true });
     });
   };

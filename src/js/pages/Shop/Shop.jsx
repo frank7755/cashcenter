@@ -140,7 +140,7 @@ export default class App extends React.Component {
   };
 
   getShop = () => {
-    request('api/select_shop', {
+    request('/api/select_shop', {
       method: 'post',
       body: {
         number: store.get(tel),
@@ -234,6 +234,10 @@ export default class App extends React.Component {
                       <p>
                         <span>店铺地址：</span>
                         {item.address}
+                      </p>
+                      <p>
+                        <span>店铺类型：</span>
+                        {item.type_name}
                       </p>
                       <p>
                         <span>创建时间：</span>
