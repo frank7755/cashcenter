@@ -144,11 +144,12 @@ class GoodsDetails extends React.Component {
           pur_no={this.props.orderNum}
           onChange={this.refreshTable}
           record={record}
-          disabled={this.props.disabled}
+          disabled={record.count == 0}
         ></ReturnGoods>
       ),
     },
   ];
+
   refreshTable = () => {
     request('/api/catering/order_management_selectdef', {
       method: 'post',
@@ -156,7 +157,12 @@ class GoodsDetails extends React.Component {
         id: this.props.id,
         pur_no: this.props.orderNum,
       },
-    }).then((payload) => this.setState({ data: payload.pageData }));
+    }).then((payload) => {
+      const { onChange } = this.props;
+
+      this.setState({ data: payload.pageData });
+      onChange && onChange();
+    });
   };
 
   showModal = () => {
@@ -170,7 +176,9 @@ class GoodsDetails extends React.Component {
         id: this.props.id,
         pur_no: this.props.orderNum,
       },
-    }).then((payload) => this.setState({ data: payload.pageData }));
+    }).then((payload) => {
+      this.setState({ data: payload.pageData });
+    });
   };
 
   handleOk = () => {
@@ -303,7 +311,7 @@ class CashFoods extends React.Component {
             </FormItem>
             <FormItem label="实付金额">
               {getFieldDecorator('sal', {
-                initialValue: this.props.record.sal,
+                initialValue: this.props.record.pur_sal,
                 rules: [
                   {
                     required: true,
@@ -377,6 +385,7 @@ class SearchTable extends React.Component {
               id={this.props.id}
               orderNum={record.pur_no}
               yztoken={this.props.yztoken}
+              onChange={this.refresh}
               disabled={record.cater_status != 0}
             ></GoodsDetails>
           </div>

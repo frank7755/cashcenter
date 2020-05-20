@@ -14,7 +14,7 @@ import {
   Cascader,
   Avatar,
   message,
-  Tooltip,
+  InputNumber,
   AutoComplete,
 } from 'antd';
 import request from '~js/utils/request';
@@ -393,7 +393,7 @@ export default class App extends React.Component {
           <FormItem label="商品价格">
             {getFieldDecorator('price', {
               rules: [{ required: true, message: '请填写划线价' }],
-            })(<Input type="text"></Input>)}
+            })(<InputNumber precision={2} min={0} style={{ width: '100%' }}></InputNumber>)}
           </FormItem>
           <FormItem label="是否上架">
             {getFieldDecorator('is_display', {

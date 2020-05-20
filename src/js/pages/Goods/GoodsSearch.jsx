@@ -76,7 +76,11 @@ class GoodsAction extends React.PureComponent {
   goodsAdd = () => {
     const { history } = this.props;
 
-    history.push('/goodsadd');
+    if (store.get(shopType) == 1) {
+      history.push('/foodsadd');
+    } else {
+      history.push('/goodsadd');
+    }
   };
 
   render() {
@@ -495,12 +499,12 @@ class GoodsTable extends React.Component {
       .catch((error) => message.error(error.message));
   };
 
-  handleSearch = ({ dateRange = [], ...rest }) => {
+  handleSearch = ({ dateRange = [], tag_ids = [], ...rest }) => {
     const { id } = this.props;
     const { table } = this.props;
     const [start_time, end_time] = dateRange;
 
-    table.search({ ...rest, id, start_time, end_time }, { ...table.pagination, current: 1 });
+    table.search({ ...rest, id, start_time, end_time, tag_ids: tag_ids[1] }, { ...table.pagination, current: 1 });
   };
 
   getDateRanges() {
@@ -575,16 +579,7 @@ class GoodsTable extends React.Component {
                   <Col span={8}>
                     <span className={styles.rowItem}>
                       <label>商品分组：</label>
-                      {getFieldDecorator('tag_ids')(
-                        <Select style={{ width: 'calc(100% - 80px)' }}>
-                          {goodsSort &&
-                            goodsSort.map((item) => (
-                              <Option value={item.value} key={item.value}>
-                                {item.label}
-                              </Option>
-                            ))}
-                        </Select>
-                      )}
+                      {getFieldDecorator('tag_ids')(<Cascader style={{ width: 'calc(100% - 80px)' }} options={goodsSort} />)}
                     </span>
                   </Col>
                 </Row>
