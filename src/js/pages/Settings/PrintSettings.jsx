@@ -12,6 +12,7 @@ const title = {
   2: '修改打印机',
   3: '声音设置',
   4: '内容设置',
+  5: '清空内容',
   6: '打印机状态',
 };
 const status = {
@@ -46,7 +47,7 @@ class PrintAction extends React.Component {
         })
           .then((payload) => {
             if (type == 6) {
-              if (message.payload == '1') {
+              if (payload == 1) {
                 message.success(status[payload]);
               } else {
                 message.error(status[payload]);
@@ -70,7 +71,6 @@ class PrintAction extends React.Component {
   };
 
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -99,9 +99,9 @@ class PrintAction extends React.Component {
           </Button>
         )}
         {type == 5 && (
-          <Popconfirm title="确认要清空内容吗？" onConfirm={this.handleOk} onCancel={this.handleCancel}>
-            <Button type="danger">清空内容</Button>
-          </Popconfirm>
+          <Button type="danger" onClick={this.showModal}>
+            清空内容
+          </Button>
         )}
         {type == 6 && (
           <Button type="primary" onClick={this.showModal}>
@@ -189,7 +189,6 @@ class CheckInfo extends React.Component {
 
   render() {
     const { visible, data } = this.state;
-    console.log(data);
 
     return (
       <Fragment>
