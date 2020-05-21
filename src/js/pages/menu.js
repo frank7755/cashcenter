@@ -127,6 +127,17 @@ export default {
         },
       ],
     },
+    {
+      key: 6,
+      title: '设置',
+      children: [
+        {
+          key: 601,
+          title: '打印机设置',
+          src: '/printsettings',
+        },
+      ],
+    },
   ],
   retail: [
     {
@@ -256,6 +267,17 @@ export default {
         },
       ],
     },
+    {
+      key: 6,
+      title: '设置',
+      children: [
+        {
+          key: 601,
+          title: '打印机设置',
+          src: '/printsettings',
+        },
+      ],
+    },
   ],
   retailStaff: [
     {
@@ -332,6 +354,6 @@ export default {
           src: '/guiderecord',
         },
       ],
-    },
+    }
   ],
 };

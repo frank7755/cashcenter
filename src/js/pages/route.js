@@ -107,6 +107,9 @@ export default {
   '/guiderecord': {
     component: loadable(() => import('~js/pages/Data/GuideRecord.jsx')),
   },
+  '/printsettings': {
+    component: loadable(() => import('~js/pages/Settings/PrintSettings.jsx')),
+  },
   // 错误页
   '/403': {
     layout: false,
