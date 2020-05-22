@@ -189,7 +189,6 @@ class CheckInfo extends React.Component {
 
   render() {
     const { visible, data } = this.state;
-    console.log(data);
 
     return (
       <Fragment>

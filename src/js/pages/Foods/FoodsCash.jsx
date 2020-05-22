@@ -148,6 +148,7 @@ export default class App extends React.Component {
   state = {
     data: [],
     skus: [],
+    sumData: [],
   };
 
   componentDidMount() {
@@ -157,8 +158,10 @@ export default class App extends React.Component {
   getFoods = () => {
     request('/api/catering/order_mast_selectact', {
       method: 'post',
-      body: { id: this.props.id },
-    }).then((payload) => this.setState({ data: payload.pageData }));
+      body: { id: 1001, type: 1 },
+    }).then((payload) =>
+      this.setState({ data: payload.pageData, sumData: payload.pageData.map((item) => item.children).flat() })
+    );
   };
 
   getCheckedData = (val) => {
@@ -166,7 +169,8 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { data, skus } = this.state;
+    const { data, skus, sumData } = this.state;
+    console.log(sumData);
     const { form } = this.props;
 
     return (
@@ -175,14 +179,20 @@ export default class App extends React.Component {
           <span>下单</span>
         </h2>
         <div className={styles.buttonBox}>
-          <CashModal data={data} skus={skus} form={this.props.form} id={this.props.id}></CashModal>
-          <CashModal type="add" data={data} form={this.props.form} skus={skus} id={this.props.id}></CashModal>
+          <CashModal data={sumData} skus={skus} form={this.props.form} id={this.props.id}></CashModal>
+          <CashModal type="add" data={sumData} form={this.props.form} skus={skus} id={this.props.id}></CashModal>
         </div>
-        <ul className={styles.foodsBox}>
-          {data.map((item) => (
-            <GoodsInfo item={item} form={form} key={item.item_id} checkedData={skus}></GoodsInfo>
-          ))}
-        </ul>
+        {data.map((item) => (
+          <div key={item.proc_id} className={styles.foodsBox}>
+            <h2>{item.group}</h2>
+            <ul>
+              {item.children.length > 0 &&
+                item.children.map((info) => (
+                  <GoodsInfo item={info} form={form} key={info.item_id} checkedData={skus}></GoodsInfo>
+                ))}
+            </ul>
+          </div>
+        ))}
       </div>
     );
   }
