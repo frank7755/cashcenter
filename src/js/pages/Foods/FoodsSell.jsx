@@ -3,6 +3,7 @@ import moment from 'moment';
 import { formatThousands, debounce } from '~js/utils/utils';
 import request from '~js/utils/request';
 import styles from '~css/Cash/SellSearch.module.less';
+import { store } from '~js/utils/utils';
 import FormSearch from '~js/components/FormSearch/';
 import { Button, Modal, Form, Input, message, DatePicker, Select, Row, Col, Table, AutoComplete, Popconfirm, Icon } from 'antd';
 import {
@@ -16,6 +17,7 @@ import {
 } from '~js/utils/date-fns';
 import serveTable from '~js/components/serveTable';
 
+const printSN = 'printSN';
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -269,6 +271,7 @@ class CashFoods extends React.Component {
           onCancel={this.handleCancel}
           footer={
             <Fragment>
+              <PrintOrder id={this.props.id} orderNum={this.props.orderNum} />
               <Button type="ghost" style={{ marginRight: 10 }} onClick={this.handleCancel}>
                 取消
               </Button>
@@ -323,6 +326,62 @@ class CashFoods extends React.Component {
           </Form>
         </Modal>
       </Fragment>
+    );
+  }
+}
+
+class PrintOrder extends React.Component {
+  state = { data: null };
+
+  handlePrint = () => {
+    request('/api/catering/order_management_selectdef', {
+      method: 'post',
+      body: {
+        id: this.props.id,
+        pur_no: this.props.orderNum,
+        type: 1,
+      },
+    })
+      .then((payload) => {
+        return request('/api/catering/xprint', {
+          method: 'post',
+          body: {
+            id: this.props.id,
+            sn: store.get(printSN),
+            content: `
+            <BR><BR><C><HB>珠海度假村大酒店
+
+            <N>欢迎光临
+
+            <L>流水号：87 汇率：1.00
+            品名  数量 金额 折让(扣) 实收
+            --------------------------------
+            度假村大肉包
+                  1.00 2.80          2.80
+            三丁大包
+                  1.00 2.00          2.00
+            --------------------------------
+            合计：人民币 4.80
+            交来：人民币 5.00
+            找回：人民币 0.20
+            日期：2019-09-09 18:54:08
+            电话：0756-2524758
+            地址：珠海市人民东路251号
+            请保留您的小票，保护您的权益.<BR><BR>
+          `,
+          },
+        });
+      })
+      .then((payload) => {
+        console.log(payload);
+      });
+  };
+
+  render() {
+    return (
+      <Button type="green" style={{ marginLeft: 10 }} onClick={this.handlePrint}>
+        打印订单
+      </Button>
     );
   }
 }
