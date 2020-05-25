@@ -1,9 +1,35 @@
 import React, { Fragment } from 'react';
 import request from '~js/utils/request';
 import styles from '~css/Foods/FoodsCash.module.less';
+import { store } from '~js/utils/utils';
+import moment from 'moment';
 import { Button, Form, Input, message, InputNumber, Checkbox, Modal } from 'antd';
 
 const FormItem = Form.Item;
+
+function a() {
+  return `
+<BR><BR><C><HB>珠海度假村大酒店
+
+<N>欢迎光临
+
+<L>流水号：87 汇率：1.00
+品名  数量 金额 折让(扣) 实收
+--------------------------------
+度假村大肉包
+      1.00 2.80          2.80
+三丁大包
+      1.00 2.00          2.00
+--------------------------------
+合计：人民币 4.80
+交来：人民币 5.00
+找回：人民币 0.20
+日期：2019-09-09 18:54:08
+电话：0756-2524758
+地址：珠海市人民东路251号
+请保留您的小票，保护您的权益.<BR><BR>
+`;
+}
 
 class GoodsInfo extends React.Component {
   render() {
@@ -36,11 +62,18 @@ class GoodsInfo extends React.Component {
 }
 
 class CashModal extends React.Component {
-  state = { visible: false };
+  state = { visible: false, orderData: [] };
 
   showModal = () => {
+    const { data } = this.props;
+    const values = this.props.form.getFieldsValue();
+    const newData = data
+      .filter(({ item_id }) => values[`good_${item_id}`].checked)
+      .map((item) => ({ ...item, count: values[`good_${item.item_id}`].count }));
+
     this.setState({
       visible: true,
+      orderData: newData,
     });
   };
 
@@ -58,6 +91,33 @@ class CashModal extends React.Component {
         .map((item) => ({ ...item, count: values[`good_${item.item_id}`].count }));
 
       if (!err) {
+        request('/api/catering/xprint', {
+          method: 'post',
+          body: {
+            id: this.props.id,
+            sn: store.get('sn'),
+            type: 4,
+            content: `
+  <BR><BR><C><HB>${store.get('shopName')}
+
+  <N>欢迎光临
+
+  <L>桌位号：${values.desk_no}
+  品名  数量  金额
+  --------------------------------
+${newData
+  .map(
+    (item) => `  ${item.name}
+          ${item.count}  ￥${item.price}`
+  )
+  .join('\r\n')}
+  --------------------------------
+  日期：${moment().format('YYYY-MM-DD HH:mm:ss')}
+  请保留您的小票，保护您的权益.<BR><BR>
+`,
+          },
+        }).catch((error) => message.error(error.message));
+
         request('/api/catering/order_management_addcreate', {
           method: 'post',
           headers: { 'Content-Type': 'application/json;' },
@@ -84,6 +144,33 @@ class CashModal extends React.Component {
         .map((item) => ({ ...item, count: values[`good_${item.item_id}`].count }));
 
       if (!err) {
+        request('/api/catering/xprint', {
+          method: 'post',
+          body: {
+            id: this.props.id,
+            sn: store.get('sn'),
+            type: 4,
+            content: `
+  <BR><BR><C><HB>${store.get('shopName')}
+
+  <N>欢迎光临
+
+  <L>桌位号：${values.desk_no}
+  品名  数量  金额
+  --------------------------------
+${newData
+  .map(
+    (item) => `  ${item.name}
+        ${item.count}  ￥${item.price}`
+  )
+  .join('\r\n')}
+  --------------------------------
+  日期：${moment().format('YYYY-MM-DD HH:mm:ss')}
+  请保留您的小票，保护您的权益.<BR><BR>
+`,
+          },
+        }).catch((error) => message.error(error.message));
+
         request('/api/catering/order_management_create', {
           method: 'post',
           headers: { 'Content-Type': 'application/json;' },
@@ -103,18 +190,18 @@ class CashModal extends React.Component {
   };
 
   render() {
-    const { visible } = this.state;
-    const { skus, form, type } = this.props;
+    const { visible, orderData } = this.state;
+    const { form, type, disabled } = this.props;
     const { getFieldDecorator } = form;
 
     return (
       <Fragment>
         {type == 'add' ? (
-          <Button type="success" onClick={this.showModal}>
+          <Button type="success" onClick={this.showModal} disabled={disabled}>
             加单
           </Button>
         ) : (
-          <Button type="primary" onClick={this.showModal}>
+          <Button type="primary" onClick={this.showModal} disabled={disabled}>
             下单
           </Button>
         )}
@@ -125,8 +212,12 @@ class CashModal extends React.Component {
           onCancel={this.handleCancel}
         >
           <Form>
-            {skus.map((item) => (
-              <p key={item.item_id}>
+            <div className={styles.orderedListTitle}>
+              <span>菜名</span>
+              <span>单价*数量</span>
+            </div>
+            {orderData.map((item) => (
+              <p key={item.item_id} className={styles.orderedList}>
                 <span>{item.name}</span>
                 <span>{item.price + '*' + item.count}</span>
               </p>
@@ -147,8 +238,8 @@ class CashModal extends React.Component {
 export default class App extends React.Component {
   state = {
     data: [],
-    skus: [],
     sumData: [],
+    disabled: true,
   };
 
   componentDidMount() {
@@ -164,13 +255,16 @@ export default class App extends React.Component {
     );
   };
 
-  getCheckedData = (val) => {
-    this.setState({ skus: val });
+  handleChange = () => {
+    const { sumData } = this.state;
+    const values = this.props.form.getFieldsValue();
+    const newData = sumData.filter(({ item_id }) => values[`good_${item_id}`].checked);
+
+    newData.length > 0 ? this.setState({ disabled: false }) : this.setState({ disabled: true });
   };
 
   render() {
-    const { data, skus, sumData } = this.state;
-    console.log(sumData);
+    const { data, sumData, disabled } = this.state;
     const { form } = this.props;
 
     return (
@@ -178,21 +272,21 @@ export default class App extends React.Component {
         <h2 className="title">
           <span>下单</span>
         </h2>
-        <div className={styles.buttonBox}>
-          <CashModal data={sumData} skus={skus} form={this.props.form} id={this.props.id}></CashModal>
-          <CashModal type="add" data={sumData} form={this.props.form} skus={skus} id={this.props.id}></CashModal>
-        </div>
-        {data.map((item) => (
-          <div key={item.proc_id} className={styles.foodsBox}>
-            <h2>{item.group}</h2>
-            <ul>
-              {item.children.length > 0 &&
-                item.children.map((info) => (
-                  <GoodsInfo item={info} form={form} key={info.item_id} checkedData={skus}></GoodsInfo>
-                ))}
-            </ul>
+        <Form onChange={this.handleChange}>
+          <div className={styles.buttonBox}>
+            <CashModal data={sumData} form={this.props.form} id={this.props.id} disabled={disabled}></CashModal>
+            <CashModal type="add" data={sumData} form={this.props.form} id={this.props.id} disabled={disabled}></CashModal>
           </div>
-        ))}
+          {data.map((item) => (
+            <div key={item.proc_id} className={styles.foodsBox}>
+              <h2>{item.group}</h2>
+              <ul>
+                {item.children.length > 0 &&
+                  item.children.map((info) => <GoodsInfo item={info} form={form} key={info.item_id}></GoodsInfo>)}
+              </ul>
+            </div>
+          ))}
+        </Form>
       </div>
     );
   }

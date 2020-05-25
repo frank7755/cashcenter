@@ -213,6 +213,7 @@ class GoodsDetails extends React.Component {
 class CashFoods extends React.Component {
   state = {
     visible: false,
+    price: null,
   };
 
   showModal = () => {
@@ -226,6 +227,10 @@ class CashFoods extends React.Component {
       visible: false,
     });
     this.props.form.resetFields();
+  };
+
+  handleChange = () => {
+    this.setState({ price: this.props.form.getFieldValue('sal') });
   };
 
   handleCash = (e) => {
@@ -256,7 +261,7 @@ class CashFoods extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { visible } = this.state;
+    const { visible, price } = this.state;
 
     return (
       <Fragment>
@@ -271,7 +276,7 @@ class CashFoods extends React.Component {
           onCancel={this.handleCancel}
           footer={
             <Fragment>
-              <PrintOrder id={this.props.id} orderNum={this.props.orderNum} />
+              <PrintOrder id={this.props.id} orderNum={this.props.orderNum} payPrice={price} />
               <Button type="ghost" style={{ marginRight: 10 }} onClick={this.handleCancel}>
                 取消
               </Button>
@@ -281,7 +286,7 @@ class CashFoods extends React.Component {
             </Fragment>
           }
         >
-          <Form>
+          <Form onChange={this.handleChange}>
             <FormItem label="员工号">{getFieldDecorator('staff_id')(<Input type="text"></Input>)}</FormItem>
             <FormItem label="会员号">{getFieldDecorator('vip_id')(<Input type="text"></Input>)}</FormItem>
             <FormItem label="支付方式">
@@ -343,38 +348,47 @@ class PrintOrder extends React.Component {
       },
     })
       .then((payload) => {
-        return request('/api/catering/xprint', {
+        let sumPrice = 0;
+        const { payPrice } = this.props;
+
+        payload.pageData.map((item) => {
+          sumPrice += Number(item.price) * Number(item.count);
+        });
+
+        request('/api/catering/xprint', {
           method: 'post',
           body: {
             id: this.props.id,
             sn: store.get(printSN),
+            type: 4,
             content: `
-            <BR><BR><C><HB>珠海度假村大酒店
+<BR><BR><C><HB>${store.get('shopName')}
 
-            <N>欢迎光临
+<N>欢迎光临
 
-            <L>流水号：87 汇率：1.00
-            品名  数量 金额 折让(扣) 实收
-            --------------------------------
-            度假村大肉包
-                  1.00 2.80          2.80
-            三丁大包
-                  1.00 2.00          2.00
-            --------------------------------
-            合计：人民币 4.80
-            交来：人民币 5.00
-            找回：人民币 0.20
-            日期：2019-09-09 18:54:08
-            电话：0756-2524758
-            地址：珠海市人民东路251号
-            请保留您的小票，保护您的权益.<BR><BR>
-          `,
+<L>桌位号：${payload.pageData[0].desk_no}
+品名  数量  金额
+--------------------------------
+${payload.pageData
+  .map(
+    (item) => `
+${item.name}
+      ${item.count}  ￥${item.price}
+`
+  )
+  .join('\r\n')}
+--------------------------------
+合计：人民币 ${sumPrice}
+实付：人民币 ${payPrice ? payPrice : sumPrice}
+结账时间：${moment().format('YYYY-MM-DD HH:mm:ss')}
+请保留您的小票，保护您的权益.<BR><BR>
+`,
           },
-        });
+        })
+          .then((payload) => message.success('打印成功'))
+          .catch((error) => message.error(error.message));
       })
-      .then((payload) => {
-        console.log(payload);
-      });
+      .catch((error) => message.error(error.message));
   };
 
   render() {
@@ -388,6 +402,10 @@ class PrintOrder extends React.Component {
 
 @serveTable()
 class SearchTable extends React.Component {
+  state = {
+    price: null,
+  };
+
   columns = [
     {
       title: '订单号',

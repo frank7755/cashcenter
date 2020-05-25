@@ -199,6 +199,7 @@ const shopName = 'shopName';
 const tel = 'telnumber';
 const role = 'userRole';
 const shopType = 'shopType';
+const sn = 'sn';
 
 @Form.create()
 export default class App extends React.Component {
@@ -216,6 +217,7 @@ export default class App extends React.Component {
     store.remove(name);
     store.remove(role);
     store.remove(shopType);
+    store.remove(sn);
   }
 
   handleRemember = (e) => {

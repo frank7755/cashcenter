@@ -133,6 +133,7 @@ const tel = 'telnumber';
 const storeToken = 'userToken';
 const shopName = 'shopName';
 const shopType = 'shopType';
+const sn = 'sn';
 
 export default class App extends React.Component {
   state = {
@@ -181,6 +182,7 @@ export default class App extends React.Component {
         store.set(userId, id);
         store.set(storeToken, payload.token_info);
         store.set(shopType, payload.shop_type);
+        store.set(sn, payload.sn);
 
         history.push('/');
       })
