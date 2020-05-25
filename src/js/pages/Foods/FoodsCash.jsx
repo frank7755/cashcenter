@@ -7,30 +7,6 @@ import { Button, Form, Input, message, InputNumber, Checkbox, Modal } from 'antd
 
 const FormItem = Form.Item;
 
-function a() {
-  return `
-<BR><BR><C><HB>珠海度假村大酒店
-
-<N>欢迎光临
-
-<L>流水号：87 汇率：1.00
-品名  数量 金额 折让(扣) 实收
---------------------------------
-度假村大肉包
-      1.00 2.80          2.80
-三丁大包
-      1.00 2.00          2.00
---------------------------------
-合计：人民币 4.80
-交来：人民币 5.00
-找回：人民币 0.20
-日期：2019-09-09 18:54:08
-电话：0756-2524758
-地址：珠海市人民东路251号
-请保留您的小票，保护您的权益.<BR><BR>
-`;
-}
-
 class GoodsInfo extends React.Component {
   render() {
     const { item, form } = this.props;
@@ -98,22 +74,23 @@ class CashModal extends React.Component {
             sn: store.get('sn'),
             type: 4,
             content: `
-  <BR><BR><C><HB>${store.get('shopName')}
+<BR><BR><C><HB>${store.get('shopName')}
 
-  <N>欢迎光临
+<N>欢迎光临
 
-  <L>桌位号：${values.desk_no}
-  品名  数量  金额
-  --------------------------------
+<L>桌位号：${values.desk_no}
+品名      数量          单价
+--------------------------------
 ${newData
   .map(
-    (item) => `  ${item.name}
-          ${item.count}  ￥${item.price}`
+    (item) => `
+${item.name}
+           ${item.count}           ￥${item.price}`
   )
-  .join('\r\n')}
-  --------------------------------
-  日期：${moment().format('YYYY-MM-DD HH:mm:ss')}
-  请保留您的小票，保护您的权益.<BR><BR>
+  .join('')}
+--------------------------------
+日期：${moment().format('YYYY-MM-DD HH:mm:ss')}
+请保留您的小票，保护您的权益.<BR><BR>
 `,
           },
         }).catch((error) => message.error(error.message));
@@ -151,22 +128,23 @@ ${newData
             sn: store.get('sn'),
             type: 4,
             content: `
-  <BR><BR><C><HB>${store.get('shopName')}
+<BR><BR><C><HB>${store.get('shopName')}
 
-  <N>欢迎光临
+<N>欢迎光临
 
-  <L>桌位号：${values.desk_no}
-  品名  数量  金额
-  --------------------------------
+<L>桌位号：${values.desk_no}
+品名      数量          单价
+--------------------------------
 ${newData
   .map(
-    (item) => `  ${item.name}
-        ${item.count}  ￥${item.price}`
+    (item) => `
+${item.name}
+           ${item.count}          ￥${item.price}`
   )
-  .join('\r\n')}
-  --------------------------------
-  日期：${moment().format('YYYY-MM-DD HH:mm:ss')}
-  请保留您的小票，保护您的权益.<BR><BR>
+  .join('')}
+--------------------------------
+日期：${moment().format('YYYY-MM-DD HH:mm:ss')}
+请保留您的小票，保护您的权益.<BR><BR>
 `,
           },
         }).catch((error) => message.error(error.message));
@@ -214,12 +192,14 @@ ${newData
           <Form>
             <div className={styles.orderedListTitle}>
               <span>菜名</span>
-              <span>单价*数量</span>
+              <span>数量</span>
+              <span>单价</span>
             </div>
             {orderData.map((item) => (
               <p key={item.item_id} className={styles.orderedList}>
                 <span>{item.name}</span>
-                <span>{item.price + '*' + item.count}</span>
+                <span>{item.count}</span>
+                <span>￥{item.price}</span>
               </p>
             ))}
             <FormItem label="座位号">

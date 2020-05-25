@@ -367,13 +367,14 @@ class PrintOrder extends React.Component {
 <N>欢迎光临
 
 <L>桌位号：${payload.pageData[0].desk_no}
-品名  数量  金额
+<L>订单号：${this.props.orderNum}
+品名      数量          单价
 --------------------------------
 ${payload.pageData
   .map(
     (item) => `
 ${item.name}
-      ${item.count}  ￥${item.price}
+            ${item.count}         ${item.price}
 `
   )
   .join('\r\n')}
