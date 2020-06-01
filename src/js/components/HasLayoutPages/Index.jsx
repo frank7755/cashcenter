@@ -136,6 +136,7 @@ class App extends React.Component {
   componentDidMount() {
     const { menu } = this.state;
     if (
+      menu &&
       defaultMenu[menu].filter(({ children }) => children.some(({ src }) => this.props.location.pathname == src)).length > 0
     ) {
       this.setState({
