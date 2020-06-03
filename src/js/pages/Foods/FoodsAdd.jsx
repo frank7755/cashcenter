@@ -210,6 +210,7 @@ export default class App extends React.Component {
     request('/api/t_goods_fz_select', {
       method: 'post',
       body: {
+        id: this.props.id,
         shop_type: store.get(shopType),
       },
     }).then((payload) => {
