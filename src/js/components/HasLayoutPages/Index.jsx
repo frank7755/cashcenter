@@ -222,7 +222,7 @@ class App extends React.Component {
     );
 
     return draw ? (
-      <Layout style={{ height: '100%', overflow: 'hidden',minWidth:"1200px" }}>
+      <Layout style={{ height: '100%', overflow: 'hidden',minWidth:"1440px" }}>
         <Sider
           className={styles.slider}
           width={200}
