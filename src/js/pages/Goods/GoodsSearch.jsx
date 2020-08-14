@@ -34,6 +34,7 @@ import {
 } from '~js/utils/date-fns';
 
 const shopType = 'shopType';
+const userId = 'userId';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const { RangePicker } = DatePicker;
@@ -269,6 +270,7 @@ class ChangeGroup extends React.Component {
       method: 'post',
       body: {
         shop_type: store.get(shopType),
+        id:store.get(userId)
       },
     }).then((payload) => {
       this.setState({ data: payload.pageData, visible: true });

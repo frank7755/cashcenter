@@ -386,7 +386,6 @@ export default class App extends React.Component {
                   <div>
                     批量设置<BatchSettings data={data} type="quantity" text="库存" onChange={this.handleBatch}></BatchSettings>
                     <BatchSettings data={data} type="price" text="价格" onChange={this.handleBatch}></BatchSettings>
-                    <BatchSettings data={data} type="item_no" text="编码" onChange={this.handleBatch}></BatchSettings>
                   </div>
                 );
               }}
