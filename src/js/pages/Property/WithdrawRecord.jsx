@@ -13,7 +13,7 @@ import {
   getLastWeek,
   getToday,
   getLast7Days,
-  getYesterday
+  getYesterday,
 } from '~js/utils/date-fns';
 
 const { RangePicker } = DatePicker;
@@ -22,59 +22,59 @@ class WithdrawDetails extends React.Component {
   state = {
     visible: false,
     source: [],
-    data: {}
+    data: {},
   };
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
     request('/api/Asset_Management/cash_shenqin_list', {
       method: 'post',
       body: {
-        ...this.props
-      }
-    }).then(payload => this.setState({ source: payload.pageData, data: payload }));
+        ...this.props,
+      },
+    }).then((payload) => this.setState({ source: payload.pageData, data: payload }));
   };
 
   handleOk = () => {
     this.setState({ visible: false });
   };
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
-  handleChange = pagination => {
+  handleChange = (pagination) => {
     request('/api/Asset_Management/cash_shenqin_list', {
       method: 'post',
       body: {
         ...this.props,
         page: pagination.current,
-        pageSize: pagination.pageSize
-      }
-    }).then(payload => this.setState({ source: payload.pageData }));
+        pageSize: pagination.pageSize,
+      },
+    }).then((payload) => this.setState({ source: payload.pageData }));
   };
 
   columns = [
     {
       title: '商品名称',
-      dataIndex: 'title'
+      dataIndex: 'title',
     },
     {
       title: '商品订单号',
-      dataIndex: 'tid'
+      dataIndex: 'tid',
     },
     {
       title: '订单明细id',
-      dataIndex: 'oid'
+      dataIndex: 'oid',
     },
     {
       title: '提现金额',
-      dataIndex: 'payment'
-    }
+      dataIndex: 'payment',
+    },
   ];
 
   render() {
@@ -89,7 +89,7 @@ class WithdrawDetails extends React.Component {
             dataSource={source}
             columns={this.columns}
             pagination={{ page: data.page, pageSize: data.pageSize, total: data.total }}
-            onChange={pagination => this.handleChange(pagination)}
+            onChange={(pagination) => this.handleChange(pagination)}
           ></Table>
         </Modal>
       </Fragment>
@@ -102,40 +102,61 @@ class ReacrdTable extends React.Component {
   columns = [
     {
       title: '提现单号',
-      dataIndex: 'pay_shop'
+      dataIndex: 'pay_shop',
     },
     {
       title: '提现金额',
       dataIndex: 'pay_price',
       render(val) {
-        return `￥ ${formatThousands(val)}`;
-      }
+        return <span className="textDelete">￥{formatThousands(val)}</span>;
+      },
     },
     {
       title: '申请时间',
       dataIndex: 'create_time',
       render(val) {
         return val && moment(val).format('YYYY-MM-DD');
-      }
+      },
     },
     {
       title: '状态',
       dataIndex: 'status_str',
       render(val) {
         return val == 1 ? <span className="textEdit">银行处理中</span> : <span className="textSuccess">提现成功</span>;
-      }
+      },
     },
     {
       title: '支付流水号',
-      dataIndex: 'pay_list'
+      dataIndex: 'pay_list',
+    },
+    {
+      title: '交易费用扣除(单笔订单5毛)',
+      dataIndex: 'tid_pay',
+      render(val) {
+        return `￥ ${formatThousands(val)}`;
+      },
+    },
+    {
+      title: '交易手续费(千6)',
+      dataIndex: 'transaction_fee',
+      render(val) {
+        return `￥ ${formatThousands(val)}`;
+      },
+    },
+    {
+      title: '实际到账金额',
+      dataIndex: 'pay_sal',
+      render(val) {
+        return <span className="textDelete">￥{formatThousands(val)}</span>;
+      },
     },
     {
       title: '操作',
       dataIndex: 'options',
       render: (val, record) => {
         return <WithdrawDetails pay_shop={record.pay_shop} id={this.props.id}></WithdrawDetails>;
-      }
-    }
+      },
+    },
   ];
 
   refresh = () => {
@@ -156,7 +177,7 @@ class ReacrdTable extends React.Component {
       昨天: getYesterday(),
       本周: getCurrWeek(),
       上周: getLastWeek(),
-      本月: getCurrMonth()
+      本月: getCurrMonth(),
     };
   }
 
@@ -174,7 +195,7 @@ class ReacrdTable extends React.Component {
                   <span className={styles.rowItem}>
                     <label>选择日期：</label>
                     {getFieldDecorator('dateRange', {
-                      initialValue: [moment().subtract(3, 'month'), moment()]
+                      initialValue: [moment().subtract(3, 'month'), moment()],
                     })(<RangePicker allowClear={false} style={{ width: 'calc(100% - 80px)' }} ranges={this.getDateRanges()} />)}
                   </span>
                 </Col>

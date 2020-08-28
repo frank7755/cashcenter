@@ -32,18 +32,16 @@ export default {
   '/foodsadd': {
     component: loadable(() => import('~js/pages/Foods/FoodsAdd.jsx')),
   },
-  // '/ruleset': {
-  //   component: loadable(() => import('~js/pages/Goods/GoodsAdd/RuleSet.jsx'))
-  // },
+  '/foodselect': {
+    layout: false,
+    component: loadable(() => import('~js/pages/Foods/FoodsSelect.jsx')),
+  },
   '/goodsedit/:id': {
     component: loadable(() => import('~js/pages/Goods/GoodsEdit.jsx')), //商品编辑
   },
   '/goodssearch': {
     component: loadable(() => import('~js/pages/Goods/GoodsSearch.jsx')), //商品查询
   },
-  // '/goodscategories': {
-  //   component: loadable(() => import('~js/pages/Goods/GoodsCategories.jsx')) //商品分类
-  // },
   '/ordermanage': {
     component: loadable(() => import('~js/pages/Purchase/OrderManage.jsx')),
   },
@@ -109,6 +107,15 @@ export default {
   },
   '/printsettings': {
     component: loadable(() => import('~js/pages/Settings/PrintSettings.jsx')),
+  },
+  '/businessinfo': {
+    component: loadable(() => import('~js/pages/Settings/BusinessInfo.jsx')),
+  },
+  '/businessinfoadd': {
+    component: loadable(() => import('~js/pages/Settings/BusinessInfoAdd.jsx')),
+  },
+  '/businessinfoedit': {
+    component: loadable(() => import('~js/pages/Settings/BusinessInfoEdit.jsx')),
   },
   // 错误页
   '/403': {

@@ -136,6 +136,11 @@ export default {
           title: '打印机设置',
           src: '/printsettings',
         },
+        {
+          key: 602,
+          title: '经营信息',
+          src: '/businessinfo',
+        },
       ],
     },
   ],
@@ -276,6 +281,11 @@ export default {
           title: '打印机设置',
           src: '/printsettings',
         },
+        {
+          key: 602,
+          title: '经营信息',
+          src: '/businessinfo',
+        },
       ],
     },
   ],
@@ -354,6 +364,6 @@ export default {
           src: '/guiderecord',
         },
       ],
-    }
+    },
   ],
 };
