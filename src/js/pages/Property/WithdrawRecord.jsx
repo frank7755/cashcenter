@@ -5,7 +5,7 @@ import styles from '~css/Property/WithdrawRecord.module.less';
 import moment from 'moment';
 import serveTable from '~js/components/serveTable';
 import FormSearch from '~js/components/FormSearch/';
-import { Table, Row, Col, DatePicker, Button, Modal } from 'antd';
+import { Table, Row, Col, DatePicker, Button, Modal, Tooltip, Icon } from 'antd';
 import {
   getCurrMonth,
   getCurrWeek,
@@ -130,14 +130,28 @@ class ReacrdTable extends React.Component {
       dataIndex: 'pay_list',
     },
     {
-      title: '交易费用扣除(单笔订单5毛)',
+      title: (
+        <div>
+          交易费用
+          <Tooltip title="单笔订单5毛">
+            <Icon type="question-circle" style={{ marginLeft: 5 }} />
+          </Tooltip>
+        </div>
+      ),
       dataIndex: 'tid_pay',
       render(val) {
         return `￥ ${formatThousands(val)}`;
       },
     },
     {
-      title: '交易手续费(千6)',
+      title: (
+        <div>
+          提现费用
+          <Tooltip title="单笔订单千6">
+            <Icon type="question-circle" style={{ marginLeft: 5 }} />
+          </Tooltip>
+        </div>
+      ),
       dataIndex: 'transaction_fee',
       render(val) {
         return `￥ ${formatThousands(val)}`;

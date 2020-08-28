@@ -244,8 +244,8 @@ export default class App extends React.Component {
                       <p>
                         <span>审核状态：</span>
                         {item.audit_status == 0 && <span className="textEdit">审核中</span>}
-                        {item.audit_status == 1 && <span className="textDelete">审核失败</span>}
-                        {item.audit_status == 2 && <span className="textSuccess">审核成功</span>}
+                        {item.audit_status == 1 && <span className="textDelete">审核未通过</span>}
+                        {item.audit_status == 2 && <span className="textSuccess">审核通过</span>}
                       </p>
                       <p>
                         <span>创建时间：</span>

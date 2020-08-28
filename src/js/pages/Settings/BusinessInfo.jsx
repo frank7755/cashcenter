@@ -18,8 +18,8 @@ class BusinessInfo extends React.Component {
           </Col>
           <Col span={12}>
             {status == 0 && <span className="textEdit">审核中</span>}
-            {status == 1 && <span className="textSuccess">审核成功</span>}
-            {status == 2 && <span className="textDelete">审核失败</span>}
+            {status == 1 && <span className="textDelete">审核未通过</span>}
+            {status == 2 && <span className="textSuccess">审核通过</span>}
           </Col>
         </Row>
         <Row style={{ margin: '24px 0' }}>
@@ -98,9 +98,9 @@ class BusinessInfo extends React.Component {
             <p style={{ textAlign: 'right', marginRight: 15 }}>营业执照照片地址：</p>
           </Col>
           <Col span={12}>
-            <div className={styles.imgBox}>
+            <a className={styles.imgBox} href={info.bl_photo} target="_blank">
               <img src={info.bl_photo}></img>
-            </div>
+            </a>
           </Col>
         </Row>
         <Row style={{ margin: '24px 0' }}>
@@ -127,9 +127,9 @@ class BusinessInfo extends React.Component {
             <p style={{ textAlign: 'right', marginRight: 15 }}>身份证正面照：</p>
           </Col>
           <Col span={12}>
-            <div className={styles.imgBox}>
+            <a className={styles.imgBox} href={info.positive_id_photo} target="_blank">
               <img src={info.positive_id_photo}></img>
-            </div>
+            </a>
           </Col>
         </Row>
         <Row style={{ margin: '24px 0' }}>
@@ -137,9 +137,9 @@ class BusinessInfo extends React.Component {
             <p style={{ textAlign: 'right', marginRight: 15 }}>身份证反面照：</p>
           </Col>
           <Col span={12}>
-            <div className={styles.imgBox}>
+            <a className={styles.imgBox} href={info.negative_id_photo} target="_blank">
               <img src={info.negative_id_photo}></img>
-            </div>
+            </a>
           </Col>
         </Row>
         <Row style={{ margin: '24px 0' }}>
@@ -147,9 +147,9 @@ class BusinessInfo extends React.Component {
             <p style={{ textAlign: 'right', marginRight: 15 }}>手持身份证照：</p>
           </Col>
           <Col span={12}>
-            <div className={styles.imgBox}>
+            <a className={styles.imgBox} href={info.sc_photo} target="_blank">
               <img src={info.sc_photo}></img>
-            </div>
+            </a>
           </Col>
         </Row>
       </div>
