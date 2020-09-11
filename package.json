@@ -76,7 +76,7 @@
   },
   "dependencies": {
     "braft-editor": "^2.3.9",
-    "http-proxy": "^1.18.0",
+    "http-proxy": "^1.18.1",
     "koa-files": "^1.0.1",
     "koa-router": "^8.0.8",
     "koa2-cors": "^2.0.6",
