@@ -32,10 +32,6 @@ export default {
   '/foodsadd': {
     component: loadable(() => import('~js/pages/Foods/FoodsAdd.jsx')),
   },
-  '/foodselect': {
-    layout: false,
-    component: loadable(() => import('~js/pages/Foods/FoodsSelect.jsx')),
-  },
   '/goodsedit/:id': {
     component: loadable(() => import('~js/pages/Goods/GoodsEdit.jsx')), //商品编辑
   },
